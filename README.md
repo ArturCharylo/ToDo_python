@@ -2,7 +2,7 @@
 
 ToDo app project to practice pyhton skills and diversify my portfolio
 
-# ToDO.py
+# ToDo.py
 
 A main file of the program all code is written here
 
