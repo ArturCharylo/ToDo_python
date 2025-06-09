@@ -5,10 +5,12 @@ import json
 print("Witaj w menedżerze zadań!")
 # is_running is a flag to control the main loop
 is_running = True
+file_name = "data.json"
 
 
 def dispaly_menu():
     # Function to dispaly the menu
+    global is_running
     print("Wybierz opcję:")
     print("1. Dodaj zadanie")
     print("2. Wyświetl zadania")
@@ -28,16 +30,43 @@ def dispaly_menu():
         case '3':
             print("Podaj numer zadania do oznaczenia jako wykonane:")
             task_number = input()
+            mark_task_as_done(task_number)
+        case '4':
+            print("Podaj numer zadania do usunięcia:")
+            task_number = input()
+            delete_task(task_number)
+        case '5':
+            is_running = False
+            print("Dziękujemy za korzystanie z menedżera zadań!")
 
 
 def dispaly_tasks():
     # Function to dispaly all the tasks that have been added
-    with open("data.json", 'r') as tasks:
+    with open(file_name, 'r') as tasks:
         for task in tasks:
             print(task.strip())
 
 
 def add_task(task_content):
-    with open("data.json", 'w') as tasks:
+    with open(file_name, 'w') as tasks:
         tasks.write(task_content + "\n")
     print(f"Zadanie '{task_content}' zostało dodane.")
+
+
+def mark_task_as_done(task_number):
+    with open(file_name, 'w') as tasks:
+        for id, task in tasks:
+            if id == task_number:
+                tasks.write(f"{task.strip()} - Wykonane\n")
+                print(
+                    f"Zadanie {task_number} zostało oznaczone jako wykonane.")
+                return
+
+
+def delete_task(task_number):
+    with open(file_name, 'r') as tasks:
+        for id, task in tasks:
+            if id == task_number:
+                tasks.remove(task)
+                print(f"Zadanie {task_number} zostało usunięte.")
+                return
