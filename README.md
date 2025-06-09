@@ -1,6 +1,6 @@
 # ToDo_python
 
-ToDo app project to practice pyhton skills and diversify my portfolio
+ToDo app project to practice python skills and diversify my portfolio
 
 To run this app you need to run py ToDo.py in your terminal once you are int the project directory
 
