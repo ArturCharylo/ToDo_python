@@ -22,6 +22,13 @@ def load_tasks():
             return []  # Return an empty list if the file is empty or corrupted
 
 
+def save_tasks(tasks):
+    # Function to save tasks to the file
+    with open(file_name, 'w') as tasks_file:
+        # Save with indentation for readability
+        json.dump(tasks, tasks_file, indent=4)
+
+
 def dispaly_menu():
     # Function to dispaly the menu
     global is_running
@@ -38,54 +45,65 @@ def dispaly_menu():
     match anwser:
         case '1':
             print("Podaj treść zadania:")
-            task_content = input()
-            add_task(task_content)
+            task_title = input()
+            add_task(task_title)
         case '2':
             dispaly_tasks()
         case '3':
             print("Podaj numer zadania do oznaczenia jako wykonane:")
-            task_number = input()
-            mark_task_as_done(task_number)
+            task_id = input()
+            mark_task_as_done(task_id)
         case '4':
             print("Podaj numer zadania do usunięcia:")
-            task_number = input()
-            delete_task(task_number)
+            task_id = input()
+            delete_task(task_id)
         case '5':
             is_running = False
             print("Dziękujemy za korzystanie z menedżera zadań!")
 
 
-def add_task(task_content):
+def add_task(task_title):
     # Function to add a new task to the file
-    with open(file_name, 'r+') as tasks:
-        json.dump(task_content, tasks)
-    print(f"Zadanie '{task_content}' zostało dodane.")
+    tasks = load_tasks()
+    tasks.append({"title": task_title, "done": False})
+    save_tasks(tasks)
+    print(f"Zadanie '{task_title}' zostało dodane.")
 
 
 def dispaly_tasks():
     # Function to dispaly all the tasks that have been added
-    with open(file_name, 'r') as tasks:
-        for task in tasks:
-            print(task.strip())
+    tasks = load_tasks()
+    if not tasks:
+        print("Brak zadań, najpierw dodaj zadania.")
+        return
+    print("Lista zadań:")
+    for id, task in enumerate(tasks, start=1):
+        status = "[X]" if task['done'] else "[ ]"
+        print(f"id: {id}. status: {status} task: {task['title']}")
 
 
-def mark_task_as_done(task_number):
-    with open(file_name, 'w') as tasks:
-        for id, task in tasks:
-            if id == task_number:
-                tasks.write(f"{task.strip()} - Wykonane\n")
-                print(
-                    f"Zadanie {task_number} zostało oznaczone jako wykonane.")
-                return
+def mark_task_as_done(task_id):
+    # Function to change the status of a task to done
+    tasks = load_tasks()
+    task_id = int(task_id) - 1  # Convert to zero-based index
+    if 0 <= task_id < len(tasks):
+        tasks[task_id]['done'] = True
+        save_tasks(tasks)
+        print(f"Zadanie o id {task_id + 1} zostało oznaczone jako wykonane.")
+    else:
+        print(f"Zadanie o id {task_id + 1} nie istnieje.")
 
 
-def delete_task(task_number):
-    with open(file_name, 'r') as tasks:
-        for id, task in tasks:
-            if id == task_number:
-                tasks.remove(task)
-                print(f"Zadanie {task_number} zostało usunięte.")
-                return
+def delete_task(task_id):
+    # Function to delete a task by its id form the data file
+    tasks = load_tasks()
+    task_id = int(task_id) - 1  # Convert to zero-based index
+    if 0 <= task_id < len(tasks):
+        tasks.pop(task_id)
+        save_tasks(tasks)
+        print(f"Zadanie o id {task_id + 1} zostało usunięte.")
+    else:
+        print(f"Zadanie o id {task_id + 1} nie istnieje.")
 
 
 # Main loop to keep the program running until the user decides to exit
