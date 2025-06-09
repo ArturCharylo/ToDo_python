@@ -20,6 +20,7 @@ def dispaly_menu():
 
     anwser = input("Wprowadź numer opcji: ")
 
+    # Match case to handle the user's choice
     match anwser:
         case '1':
             print("Podaj treść zadania:")
@@ -48,7 +49,9 @@ def dispaly_tasks():
 
 
 def add_task(task_content):
+    # Function to add a new task to the file
     with open(file_name, 'w') as tasks:
+        # ToDo: pass the task as a JSON object, now passed as a string which is not ideal but works
         tasks.write(task_content + "\n")
     print(f"Zadanie '{task_content}' zostało dodane.")
 
