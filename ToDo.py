@@ -78,7 +78,7 @@ def dispaly_tasks():
         return
     print("Lista zadań:")
     for id, task in enumerate(tasks, start=1):
-        status = "[X]" if task['done'] else "[ ]"
+        status = "Done" if task['done'] else "Undone"
         print(f"id: {id}. status: {status} task: {task['title']}")
 
 
