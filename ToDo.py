@@ -7,6 +7,20 @@ print("Witaj w menedżerze zadań!")
 is_running = True
 file_name = "data.json"
 
+# Sprawdzanie czy plik istnieje, jeśli nie to tworzenie go
+if not os.path.exists(file_name):
+    with open(file_name, 'w') as file:
+        json.dump([], file)
+
+
+def load_tasks():
+    # Function to load tasks from the file
+    with open(file_name, 'r') as tasks:
+        try:
+            return json.load(tasks)
+        except json.JSONDecodeError:
+            return []  # Return an empty list if the file is empty or corrupted
+
 
 def dispaly_menu():
     # Function to dispaly the menu
@@ -41,19 +55,18 @@ def dispaly_menu():
             print("Dziękujemy za korzystanie z menedżera zadań!")
 
 
+def add_task(task_content):
+    # Function to add a new task to the file
+    with open(file_name, 'r+') as tasks:
+        json.dump(task_content, tasks)
+    print(f"Zadanie '{task_content}' zostało dodane.")
+
+
 def dispaly_tasks():
     # Function to dispaly all the tasks that have been added
     with open(file_name, 'r') as tasks:
         for task in tasks:
             print(task.strip())
-
-
-def add_task(task_content):
-    # Function to add a new task to the file
-    with open(file_name, 'w') as tasks:
-        # ToDo: pass the task as a JSON object, now passed as a string which is not ideal but works
-        tasks.write(task_content + "\n")
-    print(f"Zadanie '{task_content}' zostało dodane.")
 
 
 def mark_task_as_done(task_number):
