@@ -70,3 +70,11 @@ def delete_task(task_number):
                 tasks.remove(task)
                 print(f"Zadanie {task_number} zostało usunięte.")
                 return
+
+
+# Main loop to keep the program running until the user decides to exit
+while is_running:
+    dispaly_menu()
+    if not is_running:
+        break
+    print()  # Print a new line for better readability
