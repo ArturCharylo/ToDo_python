@@ -1,6 +1,6 @@
-import sys
 import os
 import json
+import datetime
 # This is the line that will be executed when the script starts and will be dispalyed only once
 print("Witaj w menedżerze zadań!")
 # is_running is a flag to control the main loop
@@ -69,9 +69,10 @@ def dispaly_menu():
 def add_task(task_title, task_description, task_deadline):
     # Function to add a new task to the file
     tasks = load_tasks()
+    task_timestamp = datetime.datetime.now().isoformat()  # Get the current timestamp
     tasks.append(
         {"title": task_title, "description": task_description,
-         "deadline": task_deadline, "done": False}
+         "deadline": task_deadline, "timestamp": task_timestamp,  "done": False}
     )
     save_tasks(tasks)
     print(f"Zadanie '{task_title}' zostało dodane.")
@@ -86,8 +87,14 @@ def dispaly_tasks():
     print("Lista zadań:")
     for id, task in enumerate(tasks, start=1):
         status = "Wykonane" if task['done'] else "Niewykonane"
+        # Format the timestamp
+        try:
+            pretty_date = datetime.datetime.fromisoformat(
+                task['timestamp']).strftime("%d.%m.%Y %H:%M")
+        except Exception:
+            pretty_date = task['timestamp']
         print(
-            f"id: {id}.  tytuł: {task['title']}, opis: {task['description']}, termin wykonania: {task['deadline']}, status: {status}")
+            f"id: {id}.  tytuł: {task['title']}, opis: {task['description']}, termin wykonania: {task['deadline']}, data dodania: {pretty_date} status: {status}")
 
 
 def mark_task_as_done(task_id):
