@@ -44,9 +44,13 @@ def dispaly_menu():
     # Match case to handle the user's choice
     match anwser:
         case '1':
-            print("Podaj treść zadania:")
+            print("Podaj tytuł zadania:")
             task_title = input()
-            add_task(task_title)
+            print("Podaj opis zadania:")
+            task_description = input()
+            print("Podaj deadline zadania:")
+            task_deadline = input()
+            add_task(task_title, task_description, task_deadline)
         case '2':
             dispaly_tasks()
         case '3':
@@ -62,10 +66,13 @@ def dispaly_menu():
             print("Dziękujemy za korzystanie z menedżera zadań!")
 
 
-def add_task(task_title):
+def add_task(task_title, task_description, task_deadline):
     # Function to add a new task to the file
     tasks = load_tasks()
-    tasks.append({"title": task_title, "done": False})
+    tasks.append(
+        {"title": task_title, "description": task_description,
+         "deadline": task_deadline, "done": False}
+    )
     save_tasks(tasks)
     print(f"Zadanie '{task_title}' zostało dodane.")
 
@@ -78,8 +85,9 @@ def dispaly_tasks():
         return
     print("Lista zadań:")
     for id, task in enumerate(tasks, start=1):
-        status = "Done" if task['done'] else "Undone"
-        print(f"id: {id}. status: {status} task: {task['title']}")
+        status = "Wykonane" if task['done'] else "Niewykonane"
+        print(
+            f"id: {id}.  tytuł: {task['title']}, opis: {task['description']}, termin wykonania: {task['deadline']}, status: {status}")
 
 
 def mark_task_as_done(task_id):
