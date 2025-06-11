@@ -1,5 +1,4 @@
-# Virtual environment (zarządzane przez Poetry)
-# nie ignorujemy całego `.venv`, bo Poetry go zwykle tworzy gdzieś w systemie
+# Virtual environment 
 
 # Python cache / compiled files
 __pycache__/
@@ -8,7 +7,7 @@ __pycache__/
 *.pyd
 *.so
 
-# SQLite (baza danych lokalna - możesz trzymać, ale zazwyczaj ignorowana)
+# SQLite 
 db.sqlite3
 
 # VS Code settings
@@ -18,7 +17,7 @@ db.sqlite3
 .DS_Store
 Thumbs.db
 
-# Django migrations (jeśli nie chcesz ich wrzucać na początek)
+# Django migrations
 **/migrations/
 !**/migrations/__init__.py
 
@@ -30,10 +29,6 @@ coverage.xml
 
 # Logs
 *.log
-
-# Poetry lock file (opcjonalnie, ale ZALECANE: commituj `poetry.lock`)
-# Jeśli chcesz ignorować:
-# poetry.lock
 
 # Pytest / testing cache
 .pytest_cache/
