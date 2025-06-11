@@ -25,6 +25,6 @@ def home(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),  # zakładam, że masz appkę `api`
-    path('', home),  # <- to obsługuje http://127.0.0.1:8000/
+    path('api/', include('api.urls')),
+    path('', home),  # <- home route
 ]
