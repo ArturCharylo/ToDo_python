@@ -10,3 +10,12 @@ def task_list(request):
     tasks = Task.objects.all()
     serializer = ProductSerializer(tasks, many=True)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+def tak_add(request):
+    serializer = ProductSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+    return Response(serializer.errors, status=400)

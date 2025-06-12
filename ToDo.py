@@ -71,14 +71,17 @@ def dispaly_menu():
 
 def add_task(task_title, task_description, task_deadline):
     # Function to add a new task to the file
-    tasks = load_tasks()
-    task_timestamp = datetime.datetime.now().isoformat()  # Get the current timestamp
-    tasks.append(
-        {"title": task_title, "description": task_description,
-         "deadline": task_deadline, "timestamp": task_timestamp,  "done": False}
-    )
-    save_tasks(tasks)
-    print(f"Zadanie '{task_title}' zostało dodane.")
+    new_task = {
+        "title": task_title,
+        "description": task_description,
+        "deadline": task_deadline
+    }
+    response = requests.post("http://127.0.0.1:8000/api/add/", json=new_task)
+    if response.status_code == 201:
+        print(f"Zadanie '{task_title}' zostało dodane.")
+    else:
+        print("Błąd podczas dodawania zadania.")
+        print(response.status_code, response.text)
 
 
 def dispaly_tasks():
