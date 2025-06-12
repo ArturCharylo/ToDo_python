@@ -33,3 +33,14 @@ def task_status_update(request, task_id):
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors, status=400)
+
+
+@api_view(['DELETE'])
+def delete_task(request, task_id):
+    try:
+        task = Task.objects.get(id=task_id)
+    except Task.DoesNotExist:
+        return Response({"error": "Task not found"}, status=404)
+
+    task.delete()
+    return Response(status=204)
