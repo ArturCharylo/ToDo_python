@@ -1,6 +1,7 @@
 import os
 import json
 import datetime
+import requests
 # This is the line that will be executed when the script starts and will be dispalyed only once
 print("Witaj w menedżerze zadań!")
 # is_running is a flag to control the main loop
@@ -15,11 +16,13 @@ if not os.path.exists(file_name):
 
 def load_tasks():
     # Function to load tasks from the file
-    with open(file_name, 'r') as tasks:
-        try:
-            return json.load(tasks)
-        except json.JSONDecodeError:
-            return []  # Return an empty list if the file is empty or corrupted
+    response = requests.get("http://127.0.0.1:8000/api/")
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print("An error occurred while loading tasks.")
+        print(f"Status code: {response.status_code}")
+        return []
 
 
 def save_tasks(tasks):
@@ -82,19 +85,19 @@ def dispaly_tasks():
     # Function to dispaly all the tasks that have been added
     tasks = load_tasks()
     if not tasks:
-        print("Brak zadań, najpierw dodaj zadania.")
+        print("Brak zadań.")
         return
     print("Lista zadań:")
-    for id, task in enumerate(tasks, start=1):
-        status = "Wykonane" if task['done'] else "Niewykonane"
-        # Format the timestamp
+    for task in tasks:
+        status = "Wykonane" if task['completed'] == "Done" else "Niewykonane"
+        pretty_date = task['timestamp']
         try:
             pretty_date = datetime.datetime.fromisoformat(
                 task['timestamp']).strftime("%d.%m.%Y %H:%M")
         except Exception:
-            pretty_date = task['timestamp']
+            pass
         print(
-            f"id: {id}.  tytuł: {task['title']}, opis: {task['description']}, termin wykonania: {task['deadline']}, data dodania: {pretty_date} status: {status}")
+            f"id: {task['id']}, tytuł: {task['title']}, opis: {task['description']}, termin: {task['deadline']}, dodano: {pretty_date}, status: {status}")
 
 
 def mark_task_as_done(task_id):
