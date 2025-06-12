@@ -8,7 +8,7 @@ class Task(models.Model):
     description = models.TextField(blank=True)
     deadline = models.TextField(blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
-    completed = models.BooleanField(default=False)
+    completed = models.TextField(blank=True, default='Undone')
 
     def __str__(self):
         return self.title
