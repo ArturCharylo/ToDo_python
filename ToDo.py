@@ -25,13 +25,6 @@ def load_tasks():
         return []
 
 
-def save_tasks(tasks):
-    # Function to save tasks to the file
-    with open(file_name, 'w') as tasks_file:
-        # Save with indentation for readability
-        json.dump(tasks, tasks_file, indent=4)
-
-
 def dispaly_menu():
     # Function to dispaly the menu
     global is_running
