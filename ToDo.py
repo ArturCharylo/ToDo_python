@@ -105,14 +105,13 @@ def dispaly_tasks():
 
 def mark_task_as_done(task_id):
     # Function to change the status of a task to done
-    tasks = load_tasks()
     task_id = int(task_id) - 1  # Convert to zero-based index
-    if 0 <= task_id < len(tasks):
-        tasks[task_id]['done'] = True
-        save_tasks(tasks)
-        print(f"Zadanie o id {task_id + 1} zostało oznaczone jako wykonane.")
+    response = requests.patch(
+        f"http://localhost:8000/api/update/{task_id}/", json={"completed": "Done"})
+    if response.status_code in [200, 202]:
+        print(f"Zadanie o id {task_id} zostało oznaczone jako wykonane.")
     else:
-        print(f"Zadanie o id {task_id + 1} nie istnieje.")
+        print("Nie udało się zaktualizować zadania.")
 
 
 def delete_task(task_id):
