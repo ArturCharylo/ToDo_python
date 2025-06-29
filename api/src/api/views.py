@@ -22,9 +22,9 @@ def tak_add(request):
 
 
 @api_view(['Patch'])
-def task_status_update(request, task_id):
+def task_status_update(request, task_number):
     try:
-        task = Task.objects.get(id=task_id)
+        task = Task.objects.get(task_number=task_number)
     except Task.DoesNotExist:
         return Response({"error": "Task not found"}, status=404)
 
@@ -36,9 +36,9 @@ def task_status_update(request, task_id):
 
 
 @api_view(['DELETE'])
-def delete_task(request, task_id):
+def delete_task(request, task_number):
     try:
-        task = Task.objects.get(id=task_id)
+        task = Task.objects.get(task_number=task_number)
     except Task.DoesNotExist:
         return Response({"error": "Task not found"}, status=404)
 

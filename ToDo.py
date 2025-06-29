@@ -1,5 +1,3 @@
-import os
-import json
 import datetime
 import requests
 # This is the line that will be executed when the script starts and will be displayed only once
@@ -66,19 +64,19 @@ def display_menu():
         case 4:
             print("Podaj numer zadania do oznaczenia jako wykonane:")
             try:
-                task_id = int(input())
+                task_number = int(input())
             except ValueError:
                 print("Nieprawidłowy numer zadania.")
                 return
-            mark_task_as_done(task_id)
+            mark_task_as_done(task_number)
         case 5:
             print("Podaj numer zadania do usunięcia:")
             try:
-                task_id = int(input())
+                task_number = int(input())
             except ValueError:
                 print("Nieprawidłowy numer zadania.")
                 return
-            delete_task(task_id)
+            delete_task(task_number)
         case 6:
             is_running = False
             print("Dziękujemy za korzystanie z menedżera zadań!")
@@ -107,7 +105,7 @@ def display_tasks():
     if not tasks:
         print("Brak zadań.")
         return
-    print("="*150)
+    print("="*120)
     print("Lista zadań:")
     for task in tasks:
         status = "Wykonane" if task['completed'] == "Done" else "Niewykonane"
@@ -119,32 +117,33 @@ def display_tasks():
             pass
         if task_filter == "wszystkie":
             print(
-                f"id: {task['id']}, tytuł: {task['title']}, opis: {task['description']}, termin: {task['deadline']}, dodano: {pretty_date}, status: {status}")
+                f"numer: {task['task_number']}, tytuł: {task['title']}, opis: {task['description']}, termin: {task['deadline']}, dodano: {pretty_date}, status: {status}")
         elif task_filter == "wykonane" and task['completed'] == "Done":
             print(
-                f"id: {task['id']}, tytuł: {task['title']}, opis: {task['description']}, termin: {task['deadline']}, dodano: {pretty_date}, status: {status}")
+                f"numer: {task['task_number']}, tytuł: {task['title']}, opis: {task['description']}, termin: {task['deadline']}, dodano: {pretty_date}, status: {status}")
         elif task_filter == "niewykonane" and task['completed'] != "Done":
             print(
-                f"id: {task['id']}, tytuł: {task['title']}, opis: {task['description']}, termin: {task['deadline']}, dodano: {pretty_date}, status: {status}")
-    print("="*150)
+                f"numer: {task['task_number']}, tytuł: {task['title']}, opis: {task['description']}, termin: {task['deadline']}, dodano: {pretty_date}, status: {status}")
+    print("="*120)
 
 
-def mark_task_as_done(task_id):
+def mark_task_as_done(task_number):
     # Function to change the status of a task to done
     response = requests.patch(
-        f"{API_URL}update/{task_id}/", json={"completed": "Done"})
+        f"{API_URL}update/{task_number}/", json={"completed": "Done"})
     if response.status_code in [200, 202]:
-        print(f"Zadanie o id {task_id} zostało oznaczone jako wykonane.")
+        print(
+            f"Zadanie o numerze {task_number} zostało oznaczone jako wykonane.")
     else:
         print("Nie udało się zaktualizować zadania.")
         print(response.status_code, response.text)
 
 
-def delete_task(task_id):
-    # Function to delete a task by its id from the API
-    response = requests.delete(f"{API_URL}delete/{task_id}/")
+def delete_task(task_number):
+    # Function to delete a task by its number from the API
+    response = requests.delete(f"{API_URL}delete/{task_number}/")
     if response.status_code == 204:
-        print(f"Zadanie o id {task_id} zostało usunięte.")
+        print(f"Zadanie o numerze {task_number} zostało usunięte.")
     else:
         print("Nie udało się usunąć zadania.")
         print(response.status_code, response.text)
