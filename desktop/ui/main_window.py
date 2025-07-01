@@ -40,12 +40,18 @@ class MainWindow(QMainWindow):
 
         # ---------------- ADD TASK ----------------
         add_task_layout = QHBoxLayout()
-        self.task_input = QLineEdit()
-        self.task_input.setPlaceholderText("Wpisz tytuł nowego zadania")
+        self.task_title = QLineEdit()
+        self.task_description = QLineEdit()
+        self.task_deadline = QLineEdit()
+        self.task_title.setPlaceholderText("Wpisz tytuł nowego zadania")
+        self.task_description.setPlaceholderText("Opis zadania")
+        self.task_deadline.setPlaceholderText("Termin wykonania")
         add_button = QPushButton("Dodaj")
         add_button.clicked.connect(self.add_task)
 
-        add_task_layout.addWidget(self.task_input)
+        add_task_layout.addWidget(self.task_title)
+        add_task_layout.addWidget(self.task_description)
+        add_task_layout.addWidget(self.task_deadline)
         add_task_layout.addWidget(add_button)
 
         # ---------------- FILTER ----------------
@@ -128,19 +134,25 @@ class MainWindow(QMainWindow):
                 self, "Błąd", f"Nie udało się pobrać zadań:\n{e}")
 
     def add_task_to_listwidget(self, task, status, pretty_date):
-        item_text = f"{status} [{task['task_number']}] {task['title']} (do: {task['deadline']}) dodano: {pretty_date}"
+        item_text = (
+            f"{status} [{task['task_number']}] {task['title']} (do: {task['deadline']})\n"
+            f"Opis: {task.get('description', '')} | dodano: {pretty_date}"
+        )
         self.task_list.addItem(item_text)
 
     def add_task(self):
-        title = self.task_input.text().strip()
+        title = self.task_title.text().strip()
+        description = self.task_description.text().strip()
+        deadline = self.task_deadline.text().strip()
         if title:
-            asyncio.ensure_future(self._add_task_async(title))
+            asyncio.ensure_future(self._add_task_async(
+                title, description, deadline))
 
-    async def _add_task_async(self, title):
+    async def _add_task_async(self, title, description, deadline):
         new_task = {
             "title": title,
-            "description": "",
-            "deadline": ""
+            "description": description,
+            "deadline": deadline,
         }
         try:
             async with aiohttp.ClientSession() as session:
@@ -148,7 +160,9 @@ class MainWindow(QMainWindow):
                     if response.status == 201:
                         QMessageBox.information(
                             self, "Sukces", f"Zadanie '{title}' dodane.")
-                        self.task_input.clear()
+                        self.task_title.clear()
+                        self.task_description.clear()
+                        self.task_deadline.clear()
                         await self.load_tasks()
                     else:
                         text = await response.text()
