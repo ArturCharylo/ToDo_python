@@ -2,6 +2,8 @@
 
 A simple ToDo application created to practice Python skills and expand my programming portfolio.
 
+This is a desktop version of the app
+
 ## 🚀 How to Start
 
 ### Requirements
@@ -11,15 +13,15 @@ A simple ToDo application created to practice Python skills and expand my progra
 
 ### Running the app
 
-1. Go to the `api` directory and run:
+1. Go to the `api/src` directory and run:
 
    ```bash
    poetry run python manage.py runserver
    ```
 
-2. Once the server is running, go back to the root directory and run:
+2. Once the server is running, go back to the `desktop` directory and run:
    ```bash
-   poetry run python ToDo.py
+   poetry run python main.py
    ```
 
 > ⚠️ Make sure you have installed all required packages beforehand.
@@ -101,7 +103,7 @@ The `ToDo.py` file contains the main logic of the app. It includes:
 ## 💡 Future Improvements
 
 - Categories/tags
-- Search and filter options
+- Search options
 
 ---
 
