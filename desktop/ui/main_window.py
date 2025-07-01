@@ -4,8 +4,9 @@ from PySide6.QtWidgets import (
     QLineEdit, QPushButton, QListWidget, QMenuBar, QMenu, QMessageBox, QComboBox
 )
 from PySide6.QtGui import QAction
-from PySide6.QtCore import Qt
-import requests
+from PySide6.QtCore import Qt, QTimer
+import asyncio
+import aiohttp
 import datetime
 
 API_URL = "http://localhost:8000/api/"
@@ -81,34 +82,47 @@ class MainWindow(QMainWindow):
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
 
+        # uruchamiamy pętlę asyncio w tle
+        self.loop = asyncio.get_event_loop()
+        QTimer.singleShot(0, self.process_events)
+
         # load tasks on startup
-        self.load_tasks()
+        asyncio.ensure_future(self.load_tasks())
 
-    # ---------------- FUNCTIONS ----------------
-    def load_tasks(self):
+    def process_events(self):
         try:
-            response = requests.get(API_URL)
-            response.raise_for_status()
-            tasks = response.json()
-            self.task_list.clear()
+            self.loop.stop()
+            self.loop.run_forever()
+        except Exception:
+            pass
+        QTimer.singleShot(50, self.process_events)
 
-            for task in tasks:
-                status = "✅" if task['completed'] == "Done" else "❌"
-                pretty_date = task['timestamp']
-                try:
-                    pretty_date = datetime.datetime.fromisoformat(
-                        task['timestamp']).strftime("%d.%m.%Y %H:%M")
-                except Exception:
-                    pass
+    async def load_tasks(self):
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(API_URL) as response:
+                    response.raise_for_status()
+                    tasks = await response.json()
+                    self.task_list.clear()
 
-                # Task filters
-                if self.task_filter == "wszystkie":
-                    self.add_task_to_listwidget(task, status, pretty_date)
-                elif self.task_filter == "wykonane" and task['completed'] == "Done":
-                    self.add_task_to_listwidget(task, status, pretty_date)
-                elif self.task_filter == "niewykonane" and task['completed'] != "Done":
-                    self.add_task_to_listwidget(task, status, pretty_date)
+                    for task in tasks:
+                        status = "✅" if task['completed'] == "Done" else "❌"
+                        pretty_date = task['timestamp']
+                        try:
+                            pretty_date = datetime.datetime.fromisoformat(
+                                task['timestamp']).strftime("%d.%m.%Y %H:%M")
+                        except Exception:
+                            pass
 
+                        if self.task_filter == "wszystkie":
+                            self.add_task_to_listwidget(
+                                task, status, pretty_date)
+                        elif self.task_filter == "wykonane" and task['completed'] == "Done":
+                            self.add_task_to_listwidget(
+                                task, status, pretty_date)
+                        elif self.task_filter == "niewykonane" and task['completed'] != "Done":
+                            self.add_task_to_listwidget(
+                                task, status, pretty_date)
         except Exception as e:
             QMessageBox.warning(
                 self, "Błąd", f"Nie udało się pobrać zadań:\n{e}")
@@ -120,38 +134,51 @@ class MainWindow(QMainWindow):
     def add_task(self):
         title = self.task_input.text().strip()
         if title:
-            new_task = {
-                "title": title,
-                "description": "",
-                "deadline": ""
-            }
-            try:
-                response = requests.post(f"{API_URL}add/", json=new_task)
-                if response.status_code == 201:
-                    QMessageBox.information(
-                        self, "Sukces", f"Zadanie '{title}' dodane.")
-                    self.task_input.clear()
-                    self.load_tasks()
-                else:
-                    QMessageBox.warning(
-                        self, "Błąd", f"Nie udało się dodać zadania:\n{response.text}")
-            except Exception as e:
-                QMessageBox.warning(self, "Błąd", f"Wystąpił problem:\n{e}")
+            asyncio.ensure_future(self._add_task_async(title))
+
+    async def _add_task_async(self, title):
+        new_task = {
+            "title": title,
+            "description": "",
+            "deadline": ""
+        }
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(f"{API_URL}add/", json=new_task) as response:
+                    if response.status == 201:
+                        QMessageBox.information(
+                            self, "Sukces", f"Zadanie '{title}' dodane.")
+                        self.task_input.clear()
+                        await self.load_tasks()
+                    else:
+                        text = await response.text()
+                        QMessageBox.warning(
+                            self, "Błąd", f"Nie udało się dodać zadania:\n{text}")
+        except Exception as e:
+            QMessageBox.warning(self, "Błąd", f"Wystąpił problem:\n{e}")
 
     def toggle_task_done(self, item):
-        # Get task number from text
         text = item.text()
         try:
             task_number = int(text.split('[')[1].split(']')[0])
-            response = requests.patch(
-                f"{API_URL}update/{task_number}/", json={"completed": "Done"})
-            if response.status_code in [200, 202]:
-                QMessageBox.information(
-                    self, "OK", f"Oznaczono zadanie {task_number} jako wykonane.")
-                self.load_tasks()
-            else:
-                QMessageBox.warning(
-                    self, "Błąd", f"Nie udało się zaktualizować:\n{response.text}")
+            asyncio.ensure_future(self._toggle_task_done_async(task_number))
+        except Exception as e:
+            QMessageBox.warning(self, "Błąd", f"Błąd:\n{e}")
+
+    async def _toggle_task_done_async(self, task_number):
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.patch(
+                    f"{API_URL}update/{task_number}/", json={"completed": "Done"}
+                ) as response:
+                    if response.status in [200, 202]:
+                        QMessageBox.information(
+                            self, "OK", f"Oznaczono zadanie {task_number} jako wykonane.")
+                        await self.load_tasks()
+                    else:
+                        text = await response.text()
+                        QMessageBox.warning(
+                            self, "Błąd", f"Nie udało się zaktualizować:\n{text}")
         except Exception as e:
             QMessageBox.warning(self, "Błąd", f"Błąd:\n{e}")
 
@@ -164,17 +191,25 @@ class MainWindow(QMainWindow):
         for item in selected_items:
             try:
                 task_number = int(item.text().split('[')[1].split(']')[0])
-                response = requests.delete(f"{API_URL}delete/{task_number}/")
-                if response.status_code == 204:
-                    QMessageBox.information(
-                        self, "OK", f"Usunięto zadanie {task_number}.")
-                    self.load_tasks()
-                else:
-                    QMessageBox.warning(
-                        self, "Błąd", f"Nie udało się usunąć:\n{response.text}")
+                asyncio.ensure_future(self._delete_task_async(task_number))
             except Exception as e:
                 QMessageBox.warning(self, "Błąd", f"Błąd:\n{e}")
 
+    async def _delete_task_async(self, task_number):
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.delete(f"{API_URL}delete/{task_number}/") as response:
+                    if response.status == 204:
+                        QMessageBox.information(
+                            self, "OK", f"Usunięto zadanie {task_number}.")
+                        await self.load_tasks()
+                    else:
+                        text = await response.text()
+                        QMessageBox.warning(
+                            self, "Błąd", f"Nie udało się usunąć:\n{text}")
+        except Exception as e:
+            QMessageBox.warning(self, "Błąd", f"Błąd:\n{e}")
+
     def change_filter(self, new_filter):
         self.task_filter = new_filter
-        self.load_tasks()
+        asyncio.ensure_future(self.load_tasks())

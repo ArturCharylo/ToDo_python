@@ -11,7 +11,8 @@ dependencies = [
     "django (>=5.2.3,<6.0.0)",
     "djangorestframework (>=3.16.0,<4.0.0)",
     "requests (>=2.32.4,<3.0.0)",
-    "pyside6 (>=6.9.1,<7.0.0)"
+    "pyside6 (>=6.9.1,<7.0.0)",
+    "aiohttp (>=3.12.13,<4.0.0)"
 ]
 
 [tool.poetry]
