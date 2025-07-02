@@ -1,48 +1,56 @@
-# desktop/models/api.py
+# desktop/models/task_service.py
+
+import aiohttp
 import datetime
-import requests
 
 API_URL = "http://localhost:8000/api/"
 
 
-def load_tasks():
-    try:
-        response = requests.get(API_URL)
-        response.raise_for_status()
-        return response.json()
-    except Exception as e:
-        print(f"Błąd ładowania zadań: {e}")
-        return []
+async def load_tasks_from_api(task_filter):
+    tasks_to_display = []
+    async with aiohttp.ClientSession() as session:
+        async with session.get(API_URL) as response:
+            response.raise_for_status()
+            tasks = await response.json()
+
+            for task in tasks:
+                status = "✅" if task['completed'] == "Done" else "❌"
+                pretty_date = task['timestamp']
+                try:
+                    pretty_date = datetime.datetime.fromisoformat(
+                        task['timestamp']).strftime("%d.%m.%Y %H:%M")
+                except Exception:
+                    pass
+
+                if task_filter == "wszystkie":
+                    tasks_to_display.append((task, status, pretty_date))
+                elif task_filter == "wykonane" and task['completed'] == "Done":
+                    tasks_to_display.append((task, status, pretty_date))
+                elif task_filter == "niewykonane" and task['completed'] != "Done":
+                    tasks_to_display.append((task, status, pretty_date))
+    return tasks_to_display
 
 
-def add_task(title, description, deadline):
-    new_task = {"title": title,
-                "description": description, "deadline": deadline}
-    try:
-        response = requests.post(f"{API_URL}add/", json=new_task)
-        response.raise_for_status()
-        return True
-    except Exception as e:
-        print(f"Błąd dodawania zadania: {e}")
-        return False
+async def add_task_to_api(title, description, deadline):
+    new_task = {
+        "title": title,
+        "description": description,
+        "deadline": deadline,
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.post(f"{API_URL}add/", json=new_task) as response:
+            return response
 
 
-def mark_task_as_done(task_number):
-    try:
-        response = requests.patch(
-            f"{API_URL}update/{task_number}/", json={"completed": "Done"})
-        response.raise_for_status()
-        return True
-    except Exception as e:
-        print(f"Błąd oznaczania zadania: {e}")
-        return False
+async def toggle_task_done_in_api(task_number):
+    async with aiohttp.ClientSession() as session:
+        async with session.patch(
+            f"{API_URL}update/{task_number}/", json={"completed": "Done"}
+        ) as response:
+            return response
 
 
-def delete_task(task_number):
-    try:
-        response = requests.delete(f"{API_URL}delete/{task_number}/")
-        response.raise_for_status()
-        return True
-    except Exception as e:
-        print(f"Błąd usuwania zadania: {e}")
-        return False
+async def delete_task_in_api(task_number):
+    async with aiohttp.ClientSession() as session:
+        async with session.delete(f"{API_URL}delete/{task_number}/") as response:
+            return response

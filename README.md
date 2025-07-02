@@ -96,8 +96,7 @@ The `main_window.py` file contains the main layout and logic of the app. It incl
     ├── assets/                    # Static assets like icons, images or styles
     ├── models/                    # Business logic and data layer for the desktop app
     │   ├── __init__.py
-    │   ├── api_client.py          # Handles API communication
-    │   └── state.py               # Application state management
+    │   └── api_client.py          # Handles API communication
     └── ui/                        # User interface components
         ├── __init__.py
         └── main_window.py         # Main application window UI
