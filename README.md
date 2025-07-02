@@ -121,7 +121,6 @@ The `main_window.py` file contains the main layout and logic of the app. It incl
 
 - Categories/tags
 - Search options
-- Moving functions from `ui/main_window` to `models/api_client`
 
 ---
 
