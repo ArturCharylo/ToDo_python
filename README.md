@@ -8,6 +8,10 @@ This project was built to practice structuring multi-layered Python applications
 
 > Note: The desktop-version-PySide6 branch was merged into main and removed to keep the repository clean.
 
+## How does the desktop GUI look
+
+![Desktop GUI screenshot](./desktop/assets/desktop_GUI.png)
+
 ## 🚀 How to Start
 
 ### Requirements
@@ -94,7 +98,6 @@ The `ToDo.py` file contains the CLI logic and handles communication with the bac
 ├── LICENSE                        # Project license
 ├── pyproject.toml                 # Poetry project configuration
 ├── poetry.lock                    # Exact versions of installed dependencies
-├── .gitignore                     # Files and folders to ignore in version control
 ├── main.py                        # Main entry point for the desktop application
 ├── api/
 │   ├── src/
