@@ -2,5 +2,9 @@
 __pycache__/
 **/__pycache__/
 
+# Build files
+build/
+dist/
+
 # Environment
 .env
