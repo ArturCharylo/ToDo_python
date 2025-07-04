@@ -76,8 +76,15 @@ function App() {
               <td>{task.description}</td>
               <td>{task.completed}</td>
               <td>{new Date(task.deadline).toLocaleDateString()}</td>
-              <td><button>Update Status</button></td>
-              <td><button>Delete Task</button></td>
+              <td><button onClick={(e) => {
+                e.preventDefault()
+                UpdateTask(task)
+                setTasks(tasks.map(t => t.task_number === task.task_number ? {...t, completed: t.completed === "Done" ? "Undone" : "Done"} : t))
+              }}>Update Status</button></td>
+              <td><button onClick={(e) => {
+                e.preventDefault()
+                DeleteTask(task)
+              }}>Delete Task</button></td>
             </tr>
           ))}
         </tbody>
@@ -91,6 +98,27 @@ function App() {
     }
     catch (error) {
       console.error("Error adding task:", error)
+    }
+  }
+
+  const UpdateTask = async (task: Task) => {
+    try {
+      await axios.patch(`http://localhost:8000/api/update/${task.task_number}/`, {
+        completed: task.completed === "Done" ? "Undone" : "Done"
+      })
+    }
+    catch (error) {
+      console.error("Error updating task:", error)
+    }
+  }
+
+  const DeleteTask = async (task: Task) => {
+    try {
+      await axios.delete(`http://localhost:8000/api/delete/${task.task_number}/`)
+      setTasks(tasks.filter(t => t.task_number !== task.task_number))
+    }
+    catch (error) {
+      console.error("Error deleting task:", error)
     }
   }
 
