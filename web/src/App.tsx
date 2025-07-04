@@ -56,8 +56,8 @@ function App() {
 
   const displayTasks = () => {
     return(
-      <table>
-        <thead>
+      <table className='task-table'>
+        <thead className='task-table-header'>
           <tr>
             <th>Numer zadania</th>
             <th>Tytuł</th>
@@ -68,7 +68,7 @@ function App() {
             <th>Delete Task</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className='task-table-body'>
           {tasks.map((task) => (
             <tr key={task.task_number}>
               <td>{task.task_number}</td>
@@ -96,24 +96,21 @@ function App() {
 
   return (
     <>
-      <div>To Do App</div>
-      <div className="App">
-        <h1>Welcome to the To Do App</h1>
-        <p>Manage your tasks efficiently!</p>
-        <form onSubmit={handleSubmit}>
-          <input type="text" placeholder="Add a title for a new task" value={title} onChange={(e) => {
-            setTitle(e.target.value)
-          }}/>
-          <input type="text" placeholder="Add a description for the new task" value={description} onChange={(e) => {
-            setDescription(e.target.value)
-          }}/>
-          <input type="date" placeholder="Select a due date" value={deadline} onChange={(e) => {
-            setDeadline(e.target.value)
-          }}/>
-          <button type="submit">Add Task</button>
-        </form>
-        {displayTasks()}
-      </div>
+      <h1>Welcome to the To Do App</h1>
+      <p>Manage your tasks efficiently!</p>
+      <form onSubmit={handleSubmit} className='task-form'>
+        <input type="text" placeholder="Add a title for a new task" value={title} onChange={(e) => {
+          setTitle(e.target.value)
+        }}/>
+        <input type="text" placeholder="Add a description for the new task" value={description} onChange={(e) => {
+          setDescription(e.target.value)
+        }}/>
+        <input type="date" placeholder="Select a due date" value={deadline} onChange={(e) => {
+          setDeadline(e.target.value)
+        }}/>
+        <button type="submit">Add Task</button>
+      </form>
+      {displayTasks()}
     </>
   )
 }
