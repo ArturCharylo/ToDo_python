@@ -38,31 +38,60 @@ function App() {
       alert("Please fill in all fields")
       return
     }
-    
-    setTasks([
-      ...tasks,
-      {
-        task_number: tasks.length + 1,
-        title,
-        description,
-        deadline,
-        timestamp: new Date().toISOString(),
-        completed: "Undone"
-      }
-    ])
+  const newTask: Task = {
+      task_number: tasks.length + 1,
+      title,
+      description,
+      deadline,
+      timestamp: new Date().toISOString(),
+      completed: "Undone"
+    }
+
+    AddTask(newTask)
+    setTasks([...tasks, newTask])
     setTitle("")
     setDescription("")
     setDeadline("")
   }
 
   const displayTasks = () => {
-    return tasks.map((task, index) => (
-      <div key={index} className="task">
-        <p>
-          Numer zadania: {task.task_number} Tytuł: {task.title} - Opis: {task.description} Status: {task.completed} Deadline: {task.deadline}
-        </p>
-      </div>
-    ))
+    return(
+      <table>
+        <thead>
+          <tr>
+            <th>Numer zadania</th>
+            <th>Tytuł</th>
+            <th>Opis</th>
+            <th>Status</th>
+            <th>Deadline</th>
+            <th>Update Status</th>
+            <th>Delete Task</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tasks.map((task) => (
+            <tr key={task.task_number}>
+              <td>{task.task_number}</td>
+              <td>{task.title}</td>
+              <td>{task.description}</td>
+              <td>{task.completed}</td>
+              <td>{new Date(task.deadline).toLocaleDateString()}</td>
+              <td><button>Update Status</button></td>
+              <td><button>Delete Task</button></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )
+  }
+
+  const AddTask = async (task: Task) => {
+    try {
+      await axios.post("http://localhost:8000/api/add/", task)
+    }
+    catch (error) {
+      console.error("Error adding task:", error)
+    }
   }
 
   return (
