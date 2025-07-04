@@ -18,6 +18,8 @@ function App() {
   const [deadline, setDeadline] = useState("")
   const [tasks, setTasks] = useState<Task[]>([])
 
+  // Fetch tasks from the API when the component mounts
+  // This function retrieves the tasks from the backend and updates the state
   const fetchTasks = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/")
@@ -28,6 +30,8 @@ function App() {
     }
   }
 
+  // useEffect hook runs on app startup to fetch tasks
+  // This ensures that the task list is populated when the app loads
   useEffect(() => {
     fetchTasks()
   }, [])
@@ -79,6 +83,8 @@ function App() {
               <td><button onClick={(e) => {
                 e.preventDefault()
                 UpdateTask(task)
+                // Update the task status locally independently of the API response
+                // This is to ensure the UI reflects the change immediately
                 setTasks(tasks.map(t => t.task_number === task.task_number ? {...t, completed: t.completed === "Done" ? "Undone" : "Done"} : t))
               }}>Update Status</button></td>
               <td><button onClick={(e) => {
