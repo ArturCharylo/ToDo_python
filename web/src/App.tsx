@@ -18,7 +18,7 @@ function App() {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api")
+      const response = await axios.get("http://localhost:8000/api/")
       setTasks(response.data)
     }
     catch (error){
