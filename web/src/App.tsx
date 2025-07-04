@@ -12,6 +12,9 @@ type Task = {
   // id is present in API but not used in UI
 }
 
+type NewTask = Omit<Task, "task_number">
+
+
 function App() {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
@@ -36,27 +39,27 @@ function App() {
     fetchTasks()
   }, [])
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!title || !description || !deadline) {
-      alert("Please fill in all fields")
-      return
-    }
-  const newTask: Task = {
-      task_number: tasks.length + 1,
-      title,
-      description,
-      deadline,
-      timestamp: new Date().toISOString(),
-      completed: "Undone"
-    }
-
-    AddTask(newTask)
-    setTasks([...tasks, newTask])
-    setTitle("")
-    setDescription("")
-    setDeadline("")
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  if (!title || !description || !deadline) {
+    alert("Please fill in all fields")
+    return
   }
+
+  const newTask: NewTask = {
+    title,
+    description,
+    deadline,
+    timestamp: new Date().toISOString(),
+    completed: "Undone"
+  }
+
+  await AddTask(newTask)
+  await fetchTasks()  
+  setTitle("")
+  setDescription("")
+  setDeadline("")
+}
 
   const displayTasks = () => {
     return(
@@ -98,7 +101,7 @@ function App() {
     )
   }
 
-  const AddTask = async (task: Task) => {
+  const AddTask = async (task: NewTask) => {
     try {
       await axios.post("http://localhost:8000/api/add/", task)
     }
