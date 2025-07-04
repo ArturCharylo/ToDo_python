@@ -1,31 +1,64 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
+import axios from 'axios'
 import './App.css'
 
+type Task = {
+  title: string
+  description: string
+  dueDate: string
+  status: string
+}
+
 function App() {
-const [title, setTitle] = useState("")
-const [description, setDescription] = useState("")
-const [dueDate, setDueDate] = useState("")
-const [tasks, setTasks] = useState<string[]>([])
+  const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
+  const [dueDate, setDueDate] = useState("")
+  const [tasks, setTasks] = useState<Task[]>([])
 
-const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault()
-  if (!title || !description || !dueDate) {
-    alert("Please fill in all fields")
-    return
-  }
-  else{
-    setTasks([...tasks, `${title} - ${description} (Due: ${dueDate})`])
-    displayTasks()
-  }
-}
 
-const displayTasks = () => {
-  return tasks.map((task, index) => (
-    <div key={index} className="task">
-      <p>{task}</p>
-    </div>
-  ))
-}
+  const fetchTasks = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api")
+      setTasks(response.data)
+    }
+    catch (error){
+      console.error("Error fetching tasks:", error)
+    }
+  }
+
+  useEffect(() => {
+    fetchTasks()
+  }, [])
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!title || !description || !dueDate) {
+      alert("Please fill in all fields")
+      return
+    }
+    setTasks([
+      ...tasks,
+      {
+        title,
+        description,
+        dueDate,
+        status: "niewykonane"
+      }
+    ])
+    setTitle("")
+    setDescription("")
+    setDueDate("")
+  }
+
+  const displayTasks = () => {
+    return tasks.map((task, index) => (
+      <div key={index} className="task">
+        <p>
+          Tytuł: {task.title} - Opis: {task.description} Status: {task.status} Deadline: {task.dueDate}
+        </p>
+      </div>
+    ))
+  }
 
   return (
     <>
@@ -45,6 +78,7 @@ const displayTasks = () => {
           }}/>
           <button type="submit">Add Task</button>
         </form>
+        {displayTasks()}
       </div>
     </>
   )
