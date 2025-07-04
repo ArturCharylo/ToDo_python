@@ -14,7 +14,7 @@ This project was built to practice structuring multi-layered Python applications
 
 ## Web Preview
 
-![Web UI screenshot](./web//assets/web_UI.png)
+![Web UI screenshot](./web/src/assets/web_UI.png)
 
 ## 🚀 How to Start
 
