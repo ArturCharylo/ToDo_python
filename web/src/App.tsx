@@ -19,7 +19,9 @@ function App() {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [deadline, setDeadline] = useState("")
-  const [filter, setFilter] = useState("All") // State to manage filter status
+  const [filter, setFilter] = useState(() => {
+    return localStorage.getItem("taskFilter") ?? "All";
+  }) // State to manage filter status
   const [tasks, setTasks] = useState<Task[]>([])
 
   // Fetch tasks from the API when the component mounts
@@ -39,6 +41,10 @@ function App() {
   useEffect(() => {
     fetchTasks()
   }, [])
+
+  useEffect(() => {
+    localStorage.setItem("taskFilter", filter);
+  }, [filter]);
 
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault()
@@ -94,7 +100,12 @@ function App() {
                 UpdateTask(task)
                 // Update the task status locally independently of the API response
                 // This is to ensure the UI reflects the change immediately
-                setTasks(tasks.map(t => t.task_number === task.task_number ? {...t, completed: t.completed === "Done" ? "Undone" : "Done"} : t))
+                setTasks(tasks.map(t => 
+                  t.task_number === task.task_number 
+                    ? { ...t, completed: t.completed === "Done" ? "Undone" : "Done" } 
+                    : t
+                ));
+
               }}>Update Status</button></td>
               <td><button onClick={(e) => {
                 e.preventDefault()
