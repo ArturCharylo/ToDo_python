@@ -155,8 +155,9 @@ function App() {
       </form>
       <button className='filter-button' onClick={
         () => {
-          const statusList = ["All", "Done", "Undone"]
-          setFilter(filter === statusList[0] ? statusList[1] : filter === statusList[1] ? statusList[2] : statusList[0])
+          const statusList = ["All", "Done", "Undone"];
+          const nextIndex = (statusList.indexOf(filter) + 1) % statusList.length;
+          setFilter(statusList[nextIndex]);
         }
       }> Filter By status</button>Current filter: {filter}
       
