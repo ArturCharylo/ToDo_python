@@ -19,6 +19,7 @@ function App() {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [deadline, setDeadline] = useState("")
+  const [filter, setFilter] = useState("All") // State to manage filter status
   const [tasks, setTasks] = useState<Task[]>([])
 
   // Fetch tasks from the API when the component mounts
@@ -62,6 +63,11 @@ function App() {
 }
 
   const displayTasks = () => {
+    // Filter tasks based on the current filter state
+    const filteredTasks = filter === "All"
+      ? tasks
+      : tasks.filter(task => task.completed === filter)
+
     return(
       <table className='task-table'>
         <thead className='task-table-header'>
@@ -76,7 +82,7 @@ function App() {
           </tr>
         </thead>
         <tbody className='task-table-body'>
-          {tasks.map((task) => (
+          {filteredTasks.map((task) => (
             <tr key={task.task_number}>
               <td>{task.task_number}</td>
               <td>{task.title}</td>
@@ -147,6 +153,13 @@ function App() {
         }}/>
         <button type="submit">Add Task</button>
       </form>
+      <button className='filter-button' onClick={
+        () => {
+          const statusList = ["All", "Done", "Undone"]
+          setFilter(filter === statusList[0] ? statusList[1] : filter === statusList[1] ? statusList[2] : statusList[0])
+        }
+      }> Filter By status</button>Current filter: {filter}
+      
       {displayTasks()}
     </>
   )

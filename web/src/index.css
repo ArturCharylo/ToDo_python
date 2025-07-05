@@ -101,6 +101,19 @@ button:focus-visible {
   background: #535bf2;
 }
 
+.filter-button {
+  margin-top: 1rem;
+  margin-right: 1rem;
+  padding: 0.5em 1.2em;
+  font-size: 1em;
+  border-radius: 8px;
+  border: none;
+  background: #646cff;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
 .task-table {
   width: 100%;
   border-collapse: collapse;
