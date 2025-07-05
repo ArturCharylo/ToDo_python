@@ -164,14 +164,19 @@ function App() {
         }}/>
         <button type="submit">Add Task</button>
       </form>
-      <button className='filter-button' onClick={
-        () => {
-          const statusList = ["All", "Done", "Undone"];
-          const nextIndex = (statusList.indexOf(filter) + 1) % statusList.length;
-          setFilter(statusList[nextIndex]);
-        }
-      }> Filter By status</button>Current filter: {filter}
-      
+      <div className='filter-container'>
+        <button className='filter-button' onClick={
+          () => {
+            const statusList = ["All", "Done", "Undone"];
+            const nextIndex = (statusList.indexOf(filter) + 1) % statusList.length;
+            setFilter(statusList[nextIndex]);
+          }
+        }> Filter By status</button>Current filter: {filter}
+        <button className='sort-button' onClick={() => {
+          tasks.sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime());
+          setTasks([...tasks]); // Trigger re-render by updating state
+        }}>Sort by Deadline</button>
+      </div>
       {displayTasks()}
     </>
   )
