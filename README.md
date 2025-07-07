@@ -85,6 +85,7 @@ This project includes tests for each part of the application:
 
 - **Web**: `web/src/App.test.tsx` – unit tests for frontend logic and UI
 - **Desktop**: `desktop/tests/` – unit tests for GUI components and business logic
+- **Console**: `console/` - unit tests for CLI logic
 - **Backend**: `api/src/api/tests/` – Django tests for API endpoints
 
 To run the tests, go to the corresponding directory and use:
@@ -95,6 +96,9 @@ npm run test
 
 # For backend
 poetry run python manage.py test
+
+# For console
+poetry run python test.py
 
 # For desktop
 poetry run pytest
@@ -173,7 +177,8 @@ The `ToDo.py` file contains the CLI logic and handles communication with the bac
 │       ├── __init__.py
 │       └── main_window.py         # Main application window UI
 ├── console/
-│   └── ToDo.py                    # Console CLI version of the application
+│   ├── ToDo.py                    # Console CLI version of the application
+│   └── test.py                    # Unit tests for the CLI
 └── web/                           # Frontend React + Vite application
     ├── node_modules/              # Node.js dependencies
     ├── public/                    # Static public assets (favicon, etc.)
