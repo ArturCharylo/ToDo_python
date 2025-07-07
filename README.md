@@ -6,7 +6,7 @@ This directory contains three versions, a desktop app built with PySide6, a cons
 
 This project was built to practice structuring multi-layered Python applications (backend + desktop + CLI + web) and to demonstrate understanding of REST APIs, database migrations, and GUI design.
 
-> Note: The desktop-version-PySide6 branch was merged into main and removed to keep the repository clean.
+> Note: All the versions have their own tests if you wish to run them you can!
 
 ## Desktop Preview
 
@@ -79,6 +79,27 @@ All the backend endpoints are located in `api/src/api/views.py`. The app provide
 
 ---
 
+## 🧪 Tests
+
+This project includes tests for each part of the application:
+
+- **Web**: `web/src/App.test.tsx` – unit tests for frontend logic and UI
+- **Desktop**: `desktop/tests/` – unit tests for GUI components and business logic
+- **Backend**: `api/src/api/tests/` – Django tests for API endpoints
+
+To run the tests, go to the corresponding directory and use:
+
+```bash
+# For web
+npm run test
+
+# For backend
+poetry run python manage.py test
+
+# For desktop
+poetry run pytest
+```
+
 ## 🧠 About `App.tsx` (Web version)
 
 The `App.tsx` file contains the web frontend and all the logic that handles API requests and responses.
@@ -129,7 +150,7 @@ The `ToDo.py` file contains the CLI logic and handles communication with the bac
 │   │   │   ├── apps.py            # App configuration
 │   │   │   ├── models.py          # Database models
 │   │   │   ├── serializers.py     # DRF serializers
-│   │   │   ├── tests.py           # Unit tests for the app
+│   │   │   ├── tests/             # Unit tests for the app
 │   │   │   ├── urls.py            # App-specific URL routes
 │   │   │   └── views.py           # API views/endpoints
 │   │   ├── myapi/                 # Django project configuration
@@ -144,6 +165,7 @@ The `ToDo.py` file contains the CLI logic and handles communication with the bac
 │       └── __init__.py            # Placeholder for tests
 ├── desktop/
 │   ├── assets/                    # Static assets like icons, images or styles
+│   ├── tests/                     # Unit tests for GUI
 │   ├── models/                    # Business logic and data layer for the desktop app
 │   │   ├── __init__.py
 │   │   └── api_client.py          # Handles API communication
@@ -158,6 +180,7 @@ The `ToDo.py` file contains the CLI logic and handles communication with the bac
     ├── src/                       # Source code of the frontend
     │   ├── assets/                # Images, icons, fonts used by React app
     │   ├── App.css                # App component styles
+    │   ├── App.test.tsx           # Unit tests for logic and web display elements
     │   ├── App.tsx                # Main App component
     │   ├── index.css              # Global styles
     │   ├── main.tsx               # React entry point
