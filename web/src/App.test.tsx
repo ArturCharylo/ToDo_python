@@ -85,3 +85,78 @@ test('can filter tasks by status', async () => {
     expect(screen.getByText('Done Task')).toBeInTheDocument();
   });
 });
+
+describe('App', () => {
+  it('updates task status when clicking "Update Status"', async () => {
+    localStorage.setItem('taskFilter', 'All');
+
+    mockedAxios.get.mockResolvedValueOnce({
+      data: [
+        {
+          task_number: 1,
+          title: 'Test Task',
+          description: '',
+          deadline: new Date().toISOString(),
+          timestamp: '',
+          completed: 'Undone'
+        }
+      ]
+    });
+
+    mockedAxios.patch.mockResolvedValueOnce({}); // mock patch
+
+    render(<App />);
+
+    // Wait for the task to appear
+    expect(await screen.findByText('Test Task')).toBeInTheDocument();
+
+    // Click the first button "Update Status"
+    const updateButtons = screen.getAllByRole('button', { name: /Update Status/i });
+    fireEvent.click(updateButtons[0]);
+
+    // Check if the axios patch request was made
+    await waitFor(() => {
+      expect(mockedAxios.patch).toHaveBeenCalledWith(
+        'http://localhost:8000/api/update/1/',
+        { completed: 'Done' }
+      );
+    });
+  });
+});
+
+describe('App', () => {
+  it('deletes a task when clicking "Delete Task"', async () => {
+    localStorage.setItem('taskFilter', 'All');
+
+    mockedAxios.get.mockResolvedValueOnce({
+      data: [
+        {
+          task_number: 1,
+          title: 'Test Task',
+          description: '',
+          deadline: new Date().toISOString(),
+          timestamp: '',
+          completed: 'Undone'
+        }
+      ]
+    });
+
+    mockedAxios.delete.mockResolvedValueOnce({}); // mock delete
+
+    render(<App />);
+
+    // Wait for the task to appear
+    expect(await screen.findByText('Test Task')).toBeInTheDocument();
+
+    // Click the first button "Delete Task"
+    const deleteButtons = screen.getAllByRole('button', { name: /Delete Task/i });
+    fireEvent.click(deleteButtons[0]);
+
+    // Check if the axios delete request was made
+    await waitFor(() => {
+      expect(mockedAxios.delete).toHaveBeenCalledWith(
+        'http://localhost:8000/api/delete/1/'
+      );
+    });
+  })
+})
