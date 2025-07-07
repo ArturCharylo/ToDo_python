@@ -33,7 +33,6 @@ class TaskApiTests(APITestCase):
         url = reverse('task_status_update', args=[self.task.task_number])
         data = {'completed': 'Done'}
         response = self.client.patch(url, data, format='json')
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.task.refresh_from_db()
         self.assertEqual(self.task.completed, 'Done')
