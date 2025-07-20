@@ -3,9 +3,16 @@ services:
     build:
       context: ../api
       dockerfile: ../docker/backend/dockerfile.backend
-
     ports:
       - "8000:8000"
-
     volumes:
       - ../api:/backend
+
+  console:
+    build:
+      context: ../console
+      dockerfile: ../docker/console/dockerfile.console
+    volumes:
+      - ../console:/console
+    stdin_open: true
+    tty: true
