@@ -16,3 +16,16 @@ services:
       - ../console:/console
     stdin_open: true
     tty: true
+
+  web:
+    build:
+      context: ../web
+      dockerfile: ../docker/web/dockerfile.web
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../web:/app 
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+    
