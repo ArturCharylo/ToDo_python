@@ -28,4 +28,17 @@ services:
       - /app/node_modules
     stdin_open: true
     tty: true
+
+  desktop:
+    build:
+      context: ../desktop
+      dockerfile: ../docker/desktop/dockerfile.desktop
+    volumes:
+      - ../desktop:/app
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      - DISPLAY=${DISPLAY}
+    network_mode: host
+    stdin_open: true
+    tty: true
     
