@@ -4,7 +4,7 @@ import requests
 print("Witaj w menedżerze zadań!")
 # is_running is a flag to control the main loop
 is_running = True
-API_URL = "http://localhost:8000/api/"
+API_URL = "http://backend:8000/api/"
 task_filter = "wszystkie"  # Default filter for displaying tasks
 
 
