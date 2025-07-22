@@ -1,8 +1,8 @@
 # tests/test_main_window.py
-from unittest.mock import patch
+
+from unittest.mock import patch, AsyncMock
 import pytest
 from ui.main_window import MainWindow
-from unittest.mock import patch, AsyncMock
 
 
 @pytest.fixture
@@ -30,26 +30,27 @@ def test_add_task_to_listwidget(main_window):
 
 
 @pytest.mark.asyncio
-@pytest.mark.timeout(5)
 async def test_add_task_success(main_window, qtbot):
     # Ustawiamy pola tekstowe
     main_window.task_title.setText("Nowe zadanie")
     main_window.task_description.setText("Opis")
     main_window.task_deadline.setText("2025-07-10")
 
-    # Mockujemy wywołanie API
+    # Mockujemy metody i API
     with patch('ui.main_window.add_task_to_api', new_callable=AsyncMock) as mock_api, \
-            patch('ui.main_window.QMessageBox.information') as mock_info:
+            patch('ui.main_window.QMessageBox.information') as mock_info, \
+            patch('ui.main_window.QMessageBox.warning'), \
+            patch.object(main_window, 'load_tasks', new_callable=AsyncMock):
+
         mock_response = AsyncMock()
         mock_response.status = 201
         mock_api.return_value = mock_response
 
-        # Uruchamiamy add_task
+        # Uruchamiamy metodę
         await main_window._add_task_async("Nowe zadanie", "Opis", "2025-07-10")
 
-        # Sprawdzamy czy pojawiło się okno sukcesu
+        # Sprawdzenia
         mock_info.assert_called_once()
-        # Sprawdzamy czy pola zostały wyczyszczone
         assert main_window.task_title.text() == ""
         assert main_window.task_description.text() == ""
         assert main_window.task_deadline.text() == ""

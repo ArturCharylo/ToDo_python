@@ -26,6 +26,9 @@ packages = [{include = "api", from = "src"}]
 
 [tool.poetry.group.dev.dependencies]
 pyinstaller = "^6.14.1"
+pytest = "^8.4.1"
+pytest-qt = "^4.5.0"
+pytest-asyncio = "^1.1.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

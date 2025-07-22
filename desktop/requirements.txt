@@ -1,2 +1,6 @@
 PySide6
 aiohttp
+pytest
+pytest-qt
+pytest-asyncio
+
