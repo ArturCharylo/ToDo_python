@@ -22,7 +22,7 @@ jobs:
         run: docker compose -f docker/docker-compose.yml build --progress=plain
 
       - name: Run Django tests
-        run: docker compose -f docker/docker-compose.yml run --rm backend poetry run python src/manage.py test
+        run: docker compose -f docker/docker-compose.yml run --rm --workdir /backend/src backend python manage.py test
 
       - name: Run Web tests
         run: docker compose -f docker/docker-compose.yml run --rm web npm run test
