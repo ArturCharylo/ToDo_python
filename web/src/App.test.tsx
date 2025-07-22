@@ -8,7 +8,7 @@ vi.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 
-test('renders header and form inputs', () => {
+test('renders header and form inputs', async () => {
   render(<App />);
   expect(screen.getByText(/Welcome to the To Do App/i)).toBeInTheDocument();
   expect(screen.getByPlaceholderText(/Add a title/i)).toBeInTheDocument();
