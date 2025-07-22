@@ -26,3 +26,6 @@ jobs:
 
       - name: Run Web tests
         run: docker compose -f docker/docker-compose.yml run --rm web npm run test
+
+      - name: Run Console test
+        run: docker compose -f docker/docker-compose.yml run --rm console poetry run python test.py

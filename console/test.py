@@ -87,3 +87,7 @@ class TestTaskManager(unittest.TestCase):
     def test_display_menu_option_2(self, mock_display_tasks, mock_input):
         ToDo.display_menu()
         mock_display_tasks.assert_called_once()
+
+
+if __name__ == '__main__':
+    unittest.main()
