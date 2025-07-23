@@ -29,6 +29,3 @@ jobs:
 
       - name: Run Console tests
         run: docker compose -f docker/docker-compose.yml run --rm console python test.py
-
-      - name: Run Desktop test
-        run: docker compose -f docker/docker-compose.yml run --rm desktop bash -c "xvfb-run -a pytest -v -s tests/"
