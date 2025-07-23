@@ -8,6 +8,22 @@ This project was built to practice structuring multi-layered Python applications
 
 > Note: All the versions have their own tests if you wish to run them you can!
 
+## 📚 Table of Contents
+
+- [🚀 How to Start](#-how-to-start)
+- [🐳 Docker Support](#-docker-support)
+- [🗃️ API Setup](#-api-setup)
+- [🧪 Tests](#-tests)
+- [🧠 About App Files](#-about-app-files)
+- [📦 Structure](#-structure)
+- [✅ Example Features](#-example-features)
+- [💡 Future Improvements](#-future-improvements)
+- [🧪 Build & Run with Docker Compose](#-build--run-with-docker-compose)
+- [🔄 GitHub Actions CI/CD](#-github-actions-cicd)
+- [📜 License](#-license)
+
+---
+
 ## Desktop Preview
 
 ![Desktop GUI screenshot](./desktop/assets/desktop_GUI.png)
@@ -17,6 +33,11 @@ This project was built to practice structuring multi-layered Python applications
 ![Web UI screenshot](./web/src/assets/web_UI.png)
 
 ## 🚀 How to Start
+
+## 🐳 Docker Support
+
+You can now run the entire app using Docker!
+[See Build & Run with Docker Compose section below for details.](#-build--run-with-docker-compose)
 
 ### Requirements
 
@@ -141,6 +162,9 @@ The `ToDo.py` file contains the CLI logic and handles communication with the bac
 
 ```
 .
+├── .github/
+│   └── workflows/
+│       └── docker-build.yml       # GitHub Actions workflow for building Docker images
 ├── README.md                      # Project documentation
 ├── LICENSE                        # Project license
 ├── pyproject.toml                 # Poetry project configuration
@@ -179,26 +203,32 @@ The `ToDo.py` file contains the CLI logic and handles communication with the bac
 ├── console/
 │   ├── ToDo.py                    # Console CLI version of the application
 │   └── test.py                    # Unit tests for the CLI
-└── web/                           # Frontend React + Vite application
-    ├── node_modules/              # Node.js dependencies
-    ├── public/                    # Static public assets (favicon, etc.)
-    ├── src/                       # Source code of the frontend
-    │   ├── assets/                # Images, icons, fonts used by React app
-    │   ├── App.css                # App component styles
-    │   ├── App.test.tsx           # Unit tests for logic and web display elements
-    │   ├── App.tsx                # Main App component
-    │   ├── index.css              # Global styles
-    │   ├── main.tsx               # React entry point
-    │   └── vite-env.d.ts          # Vite TypeScript environment declarations
-    ├── .gitignore                 # Files and folders to ignore by Git
-    ├── eslint.config.js           # ESLint configuration
-    ├── index.html                 # HTML template
-    ├── package.json               # NPM project metadata and scripts
-    ├── package-lock.json          # Exact versions of installed npm dependencies
-    ├── tsconfig.json              # Base TypeScript configuration
-    ├── tsconfig.app.json          # TypeScript config for app compilation
-    ├── tsconfig.node.json         # TypeScript config for Node tools
-    └── vite.config.ts             # Vite configuration file
+├── web/                           # Frontend React + Vite application
+│    ├── node_modules/              # Node.js dependencies
+│    ├── public/                    # Static public assets (favicon, etc.)
+│    ├── src/                       # Source code of the frontend
+│    │   ├── assets/                # Images, icons, fonts used by React app
+│    │   ├── App.css                # App component styles
+│    │   ├── App.test.tsx           # Unit tests for logic and web display elements
+│    │   ├── App.tsx                # Main App component
+│    │   ├── index.css              # Global styles
+│    │   ├── main.tsx               # React entry point
+│    │   └── vite-env.d.ts          # Vite TypeScript environment declarations
+│    ├── .gitignore                 # Files and folders to ignore by Git
+│    ├── eslint.config.js           # ESLint configuration
+│    ├── index.html                 # HTML template
+│    ├── package.json               # NPM project metadata and scripts
+│    ├── package-lock.json          # Exact versions of installed npm dependencies
+│    ├── tsconfig.json              # Base TypeScript configuration
+│    ├── tsconfig.app.json          # TypeScript config for app compilation
+│    ├── tsconfig.node.json         # TypeScript config for Node tools
+│    └── vite.config.ts             # Vite configuration file
+└──  docker/
+   ├── docker-compose.yml         # Main Docker Compose file to run all services
+   ├── dockerfile.backend         # Dockerfile for the Django backend
+   ├── dockerfile.web             # Dockerfile for the web frontend
+   ├── dockerfile.desktop         # Dockerfile for the desktop GUI app
+   └── dockerfile.console         # Dockerfile for the console CLI version
 
 ```
 
@@ -223,6 +253,42 @@ The `ToDo.py` file contains the CLI logic and handles communication with the bac
 - User Authentication
 
 ---
+
+## 🧪 Build & Run with Docker Compose
+
+Make sure you have Docker and Docker Compose installed.
+
+> You can install Docker Desktop here: [Install Docker Desktop](https://docs.docker.com/desktop/setup/install/windows-install/)
+
+```bash
+cd docker
+docker-compose up --build
+```
+
+This will spin up the following services:
+
+- 🐍 backend (Django API)
+- 🌐 web (Vite + React)
+- 🖥️ desktop (PySide6 GUI)
+- 💻 console (CLI version)
+
+> Note: Desktop and Console services run in containers and are mainly useful for debugging and CI — local use is still easier outside Docker.
+
+To Stop the container you can either do so manually in docker desktop or by:
+
+```bash
+docker-compose down *container-name*
+```
+
+## 🔄 GitHub Actions CI/CD
+
+This repository includes a GitHub Actions workflow at:
+
+```bash
+.github/workflows/docker-build.yml
+```
+
+This workflow automatically builds and validates all Docker images on every push to ensure your containers stay in a working state.
 
 ## 📜 License
 
