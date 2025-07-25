@@ -1,5 +1,5 @@
 # src/api/urls.py
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
@@ -8,4 +8,5 @@ urlpatterns = [
     path('update/<int:task_number>/', views.task_status_update,
          name='task_status_update'),
     path('delete/<int:task_number>/', views.delete_task, name='delete_task'),
+    path('accounts/', include('allauth.urls')),
 ]
