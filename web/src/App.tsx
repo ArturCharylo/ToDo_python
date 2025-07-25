@@ -23,6 +23,7 @@ function App() {
     return localStorage.getItem("taskFilter") ?? "All";
   }) // State to manage filter status
   const [tasks, setTasks] = useState<Task[]>([])
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   // Fetch tasks from the API when the component mounts
   // This function retrieves the tasks from the backend and updates the state
@@ -69,7 +70,6 @@ function App() {
 }
 
   const displayTasks = () => {
-    // Filter tasks based on the current filter state
     const filteredTasks = filter === "All"
       ? tasks
       : tasks.filter(task => task.completed === filter)
@@ -78,39 +78,89 @@ function App() {
       <table className='task-table'>
         <thead className='task-table-header'>
           <tr>
-            <th>Numer zadania</th>
-            <th>Tytuł</th>
-            <th>Opis</th>
+            <th>Task Number</th>
+            <th>Tile</th>
+            <th>Description</th>
             <th>Status</th>
             <th>Deadline</th>
             <th>Update Status</th>
             <th>Delete Task</th>
+            <th>Edit Task</th>
           </tr>
         </thead>
         <tbody className='task-table-body'>
           {filteredTasks.map((task) => (
             <tr key={task.task_number}>
               <td>{task.task_number}</td>
-              <td>{task.title}</td>
-              <td>{task.description}</td>
-              <td>{task.completed}</td>
-              <td>{new Date(task.deadline).toLocaleDateString()}</td>
-              <td><button onClick={(e) => {
-                e.preventDefault()
-                UpdateTask(task)
-                // Update the task status locally independently of the API response
-                // This is to ensure the UI reflects the change immediately
-                setTasks(tasks.map(t => 
-                  t.task_number === task.task_number 
-                    ? { ...t, completed: t.completed === "Done" ? "Undone" : "Done" } 
-                    : t
-                ));
-
-              }}>Update Status</button></td>
-              <td><button onClick={(e) => {
-                e.preventDefault()
-                DeleteTask(task)
-              }}>Delete Task</button></td>
+              {editingTask?.task_number === task.task_number ? (
+                <>
+                  <td>
+                    <input
+                      type="text"
+                      className="edit-input"
+                      value={editingTask.title}
+                      onChange={e => setEditingTask({...editingTask, title: e.target.value})}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      className="edit-input"
+                      value={editingTask.description}
+                      onChange={e => setEditingTask({...editingTask, description: e.target.value})}
+                    />
+                  </td>
+                  <td>{editingTask.completed}</td>
+                  <td>
+                    <input
+                      type="date"
+                      className="edit-input"
+                      value={editingTask.deadline}
+                      onChange={e => setEditingTask({...editingTask, deadline: e.target.value})}
+                    />
+                  </td>
+                  <td>
+                    <button disabled>Update Status</button>
+                  </td>
+                  <td>
+                    <button disabled>Delete Task</button>
+                  </td>
+                  <td>
+                    <button onClick={handleEditSave}>Save</button>
+                    <button onClick={() => setEditingTask(null)}>Cancel</button>
+                  </td>
+                </>
+              ) : (
+                <>
+                  <td>{task.title}</td>
+                  <td>{task.description}</td>
+                  <td>{task.completed}</td>
+                  <td>{new Date(task.deadline).toLocaleDateString()}</td>
+                  <td>
+                    <button onClick={(e) => {
+                      e.preventDefault()
+                      UpdateTask(task)
+                      setTasks(tasks.map(t => 
+                        t.task_number === task.task_number 
+                          ? { ...t, completed: t.completed === "Done" ? "Undone" : "Done" } 
+                          : t
+                      ));
+                    }}>Update Status</button>
+                  </td>
+                  <td>
+                    <button onClick={(e) => {
+                      e.preventDefault()
+                      DeleteTask(task)
+                    }}>Delete Task</button>
+                  </td>
+                  <td>
+                    <button onClick={(e) => {
+                      e.preventDefault();
+                      handleEditClick(task);
+                    }}>Edit Task</button>
+                  </td>
+                </>
+              )}
             </tr>
           ))}
         </tbody>
@@ -140,7 +190,8 @@ function App() {
 
   const DeleteTask = async (task: Task) => {
     try {
-      await axios.delete(`http://localhost:8000/api/delete/${task.task_number}/`)
+      await axios.delete(`http://localhost:8000/api/delete/${task.task_number}/`,{
+      })
       setTasks(tasks.filter(t => t.task_number !== task.task_number))
     }
     catch (error) {
@@ -148,14 +199,39 @@ function App() {
     }
   }
 
+  const handleEditClick = (task: Task) => {
+    setEditingTask(task);
+  };
+
+  const handleEditSave = async () => {
+    if (editingTask) {
+      try {
+        await axios.patch(`http://localhost:8000/api/update/${editingTask.task_number}/`, {
+          title: editingTask.title,
+          description: editingTask.description,
+          deadline: editingTask.deadline,
+        });
+        await fetchTasks();
+        setEditingTask(null);
+      } catch (error) {
+        console.error("Error saving edited task:", error);
+      }
+    }
+  };
+
   return (
     <>
       <h1>Welcome to the To Do App</h1>
       <p>Manage your tasks efficiently!</p>
       <form onSubmit={handleSubmit} className='task-form'>
-        <input type="text" placeholder="Add a title for a new task" value={title} onChange={(e) => {
-          setTitle(e.target.value)
-        }}/>
+        <input
+          type="text"
+          placeholder="Add a title for a new task"
+          value={title}
+          onChange={(e) => {
+            setTitle(e.target.value)
+          }}
+        />
         <input type="text" placeholder="Add a description for the new task" value={description} onChange={(e) => {
           setDescription(e.target.value)
         }}/>
