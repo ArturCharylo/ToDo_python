@@ -1,7 +1,7 @@
 // src/components/Login.tsx
 import { GoogleLogin } from '@react-oauth/google';
 import type { CredentialResponse } from '@react-oauth/google';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 
 const LoginComponent = () => {
@@ -16,7 +16,7 @@ const LoginComponent = () => {
       sub?: string;
     }
 
-    const decoded = jwt_decode<GoogleJwtPayload>(token);
+    const decoded = jwtDecode<GoogleJwtPayload>(token);
     console.log("Zalogowany użytkownik Google:", decoded);
 
     try {
