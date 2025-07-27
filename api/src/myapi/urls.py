@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
+from api.views import get_csrf
 
 
 def home(request):
@@ -29,5 +30,6 @@ urlpatterns = [
     path('', home),
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
-    path('accounts/', include('allauth.socialaccount.urls')),
+    path('accounts/', include('allauth.urls')),
+    path("csrf/", get_csrf),
 ]

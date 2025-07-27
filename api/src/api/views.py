@@ -2,7 +2,14 @@ from .serializers import TaskSerializer
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.http import JsonResponse
 from .models import Task
+
+
+@ensure_csrf_cookie
+def get_csrf(request):
+    return JsonResponse({'message': 'CSRF cookie set'})
 
 
 @api_view(['GET'])

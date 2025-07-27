@@ -86,6 +86,12 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://backend:8000"
 ]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+SESSION_COOKIE_SAMESITE = 'Lax'
+
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -154,9 +160,10 @@ AUTHENTICATION_BACKENDS = [
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
-ACCOUNT_EMAIL_VERIFICATION = "none"
-ACCOUNT_LOGIN_METHODS = {'username', 'email'}
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+ACCOUNT_SIGNUP_FIELDS = {
+    "email": {"required": True},
+    "password1": {"required": True},
+}
 
 
 SOCIALACCOUNT_PROVIDERS = {
