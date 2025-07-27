@@ -14,7 +14,8 @@ dependencies = [
     "django-allauth (>=65.10.0,<66.0.0)",
     "python-dotenv (>=1.1.1,<2.0.0)",
     "requests (>=2.32.4,<3.0.0)",
-    "jwt (>=1.4.0,<2.0.0)"
+    "jwt (>=1.4.0,<2.0.0)",
+    "dj-rest-auth[social] (>=7.0.1,<8.0.0)"
 ]
 
 [tool.poetry]

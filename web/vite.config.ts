@@ -8,7 +8,8 @@ export default defineConfig({
     environment: 'jsdom',
   },
   server: {
-    host: '0.0.0.0', // ← konieczne dla Docker
-    port: 5173
+    host: '0.0.0.0',
+    port: 5173,
+    cors: true,
   },
 })

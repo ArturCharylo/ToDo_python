@@ -1,6 +1,15 @@
 # src/api/urls.py
 from django.urls import path, include
 from . import views
+from dj_rest_auth.registration.views import SocialLoginView
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+
 
 urlpatterns = [
     path('', views.task_list, name='api'),
@@ -9,4 +18,5 @@ urlpatterns = [
          name='task_status_update'),
     path('delete/<int:task_number>/', views.delete_task, name='delete_task'),
     path('accounts/', include('allauth.urls')),
+    path("google/", GoogleLogin.as_view(), name="google_login"),
 ]

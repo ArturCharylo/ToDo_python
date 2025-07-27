@@ -271,6 +271,24 @@ test = ["certifi (>=2024)", "cryptography-vectors (==45.0.5)", "pretend (>=0.7)"
 test-randomorder = ["pytest-randomly"]
 
 [[package]]
+name = "dj-rest-auth"
+version = "7.0.1"
+description = "Authentication and Registration in Django Rest Framework"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "dj-rest-auth-7.0.1.tar.gz", hash = "sha256:3f8c744cbcf05355ff4bcbef0c8a63645da38e29a0fdef3c3332d4aced52fb90"},
+]
+
+[package.dependencies]
+Django = ">=4.2,<6.0"
+djangorestframework = ">=3.13.0"
+
+[package.extras]
+with-social = ["django-allauth[socialaccount] (>=64.0.0)"]
+
+[[package]]
 name = "django"
 version = "5.2.3"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
@@ -479,4 +497,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "7640710e70b5e23783402f2fb5446b59aa9ba32ef00bddb2fbeac4512bfc6606"
+content-hash = "c68ebce845aab997d9a6feb7e85dfbe9cbfad4eec32a45e51ac340371469a35f"
