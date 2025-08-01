@@ -1,15 +1,10 @@
-from .serializers import TaskSerializer
+from .serializers import TaskSerializer, UserSerializer
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
-from .models import Task
-
-
-@ensure_csrf_cookie
-def get_csrf(request):
-    return JsonResponse({'message': 'CSRF cookie set'})
+from .models import Task, User
 
 
 @api_view(['GET'])
@@ -20,12 +15,21 @@ def task_list(request):
 
 
 @api_view(['POST'])
-def tak_add(request):
+def task_add(request):
     serializer = TaskSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
+
+
+@api_view(['POST'])
+def add_credencials(request):
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+    return Response(serializer.error, status=400)
 
 
 @api_view(['Patch'])

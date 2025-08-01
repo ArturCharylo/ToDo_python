@@ -13,10 +13,11 @@ class GoogleLogin(SocialLoginView):
 
 urlpatterns = [
     path('', views.task_list, name='api'),
-    path('add/', views.tak_add, name='task_add'),
+    path('add/', views.task_add, name='task_add'),
     path('update/<int:task_number>/', views.task_status_update,
          name='task_status_update'),
     path('delete/<int:task_number>/', views.delete_task, name='delete_task'),
+    path('add_user/', views.add_credencials, name='add_credencials'),
     path('accounts/', include('allauth.urls')),
     path("google/", GoogleLogin.as_view(), name="google_login"),
 ]
