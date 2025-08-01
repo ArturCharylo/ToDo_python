@@ -30,7 +30,7 @@ const LoginComponent = () => {
         console.error("Błąd podczas logowania:", error);
       }
     }
-    navigate("/");
+    navigate("/home");
   };
   return (
     <div>
