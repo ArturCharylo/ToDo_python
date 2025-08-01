@@ -21,8 +21,14 @@ const LoginComponent = () => {
         username: decoded.name, // or decoded.email if you want email as username
         credentials: credencialResponse.credential
       });
+      const res = await axios.get('http://localhost:8000/api/get_users');
+      console.log("Użytkownicy:", res.data);
     } catch (error) {
-      console.error("Błąd podczas logowania:", error);
+      if (axios.isAxiosError(error) && error.response) {
+        console.error("Błąd podczas logowania:", error.response.data);
+      } else {
+        console.error("Błąd podczas logowania:", error);
+      }
     }
     navigate("/");
   };

@@ -18,6 +18,7 @@ urlpatterns = [
          name='task_status_update'),
     path('delete/<int:task_number>/', views.delete_task, name='delete_task'),
     path('add_user/', views.add_credencials, name='add_credencials'),
+    path('get_users', views.users_list, name="users_list"),
     path('accounts/', include('allauth.urls')),
     path("google/", GoogleLogin.as_view(), name="google_login"),
 ]
