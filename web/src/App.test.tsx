@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import App from './App';
+import App from './pages/App';
 import axios from 'axios';
 import { vi } from 'vitest';
 

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
-import './App.css'
+import '../App.css'
 
 type Task = {
   task_number: number
@@ -40,6 +40,10 @@ function App() {
   // useEffect hook runs on app startup to fetch tasks
   // This ensures that the task list is populated when the app loads
   useEffect(() => {
+    if (!localStorage.getItem('token')) {
+      alert("You are not logged in. Please log in to continue.");
+      window.location.href = '/'; // Redirect to login if no token is found
+    }
     fetchTasks()
   }, [])
 

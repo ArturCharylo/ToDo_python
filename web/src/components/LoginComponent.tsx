@@ -21,8 +21,7 @@ const LoginComponent = () => {
         username: decoded.name, // or decoded.email if you want email as username
         credentials: credencialResponse.credential
       });
-      const res = await axios.get('http://localhost:8000/api/get_users');
-      console.log("Użytkownicy:", res.data);
+      localStorage.setItem('token', credencialResponse.credential || '');
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         console.error("Błąd podczas logowania:", error.response.data);
