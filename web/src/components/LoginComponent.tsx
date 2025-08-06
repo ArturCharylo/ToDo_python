@@ -31,6 +31,11 @@ const LoginComponent = () => {
     }
     navigate("/home");
   };
+
+  const handleGitHubLogin = async () => {
+    const clientId = 'Ov23liMbdbPZIZnCbi9G';
+    navigate("/home")
+  }
   return (
     <div>
       <h2>Zaloguj się przez Google</h2>
@@ -40,6 +45,10 @@ const LoginComponent = () => {
         }}
         onError={() => console.log("Błąd logowania Google")}
       />
+      <h2>Zaloguj się przez GitHub</h2>
+      <button onClick={handleGitHubLogin}>
+        Zaloguj się przez GitHub
+      </button>
     </div>
   );
 };
