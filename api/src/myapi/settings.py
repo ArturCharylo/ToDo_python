@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 import os
-load_dotenv('./env')
+load_dotenv('./.env')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-89v(%b77o0-e$)!a4&)j6-#+y4ncspo_c9h%vs-5i(bawhp8mo'
+SECRET_KEY = os.getenv("DJANGO_SECRET")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
     'rest_framework.authtoken',
 ]
 
@@ -62,6 +63,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
 
 ROOT_URLCONF = 'myapi.urls'
 
@@ -150,7 +157,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # OAuth settings
 
-SITE_ID = 1
+SITE_ID = 2
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -174,6 +181,12 @@ SOCIALACCOUNT_PROVIDERS = {
         ],
         "AUTH_PARAMS": {
             "access_type": "online",
+        }
+    },
+    "github": {
+        "APP": {
+            "client_id": os.getenv("GITHUB_CLIENT_ID"),
+            "secret": os.getenv("GITHUB_SECRET"),
         }
     }
 }

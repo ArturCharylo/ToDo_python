@@ -15,7 +15,10 @@ dependencies = [
     "python-dotenv (>=1.1.1,<2.0.0)",
     "requests (>=2.32.4,<3.0.0)",
     "jwt (>=1.4.0,<2.0.0)",
-    "dj-rest-auth[social] (>=7.0.1,<8.0.0)"
+    "dj-rest-auth[with-social] (>=7.0.1,<8.0.0)",
+    "python-decouple (>=3.8,<4.0)",
+    "rest-framework-simplejwt (>=0.0.2,<0.0.3)",
+    "djangorestframework-simplejwt (>=5.5.1,<6.0.0)"
 ]
 
 [tool.poetry]

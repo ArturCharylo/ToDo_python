@@ -283,6 +283,7 @@ files = [
 
 [package.dependencies]
 Django = ">=4.2,<6.0"
+django-allauth = {version = ">=64.0.0", extras = ["socialaccount"], optional = true, markers = "extra == \"with-social\""}
 djangorestframework = ">=3.13.0"
 
 [package.extras]
@@ -323,6 +324,9 @@ files = [
 [package.dependencies]
 asgiref = ">=3.8.1"
 Django = ">=4.2.16"
+oauthlib = {version = ">=3.3.0,<4", optional = true, markers = "extra == \"socialaccount\""}
+pyjwt = {version = ">=2.0,<3", extras = ["crypto"], optional = true, markers = "extra == \"socialaccount\""}
+requests = {version = ">=2.0.0,<3", optional = true, markers = "extra == \"socialaccount\""}
 
 [package.extras]
 idp-oidc = ["oauthlib (>=3.3.0,<4)", "pyjwt[crypto] (>=2.0,<3)"]
@@ -364,6 +368,31 @@ files = [
 django = ">=4.2"
 
 [[package]]
+name = "djangorestframework-simplejwt"
+version = "5.5.1"
+description = "A minimal JSON Web Token authentication plugin for Django REST Framework"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "djangorestframework_simplejwt-5.5.1-py3-none-any.whl", hash = "sha256:2c30f3707053d384e9f315d11c2daccfcb548d4faa453111ca19a542b732e469"},
+    {file = "djangorestframework_simplejwt-5.5.1.tar.gz", hash = "sha256:e72c5572f51d7803021288e2057afcbd03f17fe11d484096f40a460abc76e87f"},
+]
+
+[package.dependencies]
+django = ">=4.2"
+djangorestframework = ">=3.14"
+pyjwt = ">=1.7.1"
+
+[package.extras]
+crypto = ["cryptography (>=3.3.1)"]
+dev = ["Sphinx", "cryptography", "freezegun", "ipython", "pre-commit", "pytest", "pytest-cov", "pytest-django", "pytest-watch", "pytest-xdist", "python-jose (==3.3.0)", "pyupgrade", "ruff", "sphinx_rtd_theme (>=0.1.9)", "tox", "twine", "wheel", "yesqa"]
+doc = ["Sphinx", "sphinx_rtd_theme (>=0.1.9)"]
+lint = ["pre-commit", "pyupgrade", "ruff", "yesqa"]
+python-jose = ["python-jose (==3.3.0)"]
+test = ["cryptography", "freezegun", "pytest", "pytest-cov", "pytest-django", "pytest-xdist", "tox"]
+
+[[package]]
 name = "idna"
 version = "3.10"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -398,6 +427,23 @@ dev = ["black", "isort", "mypy", "types-freezegun"]
 test = ["freezegun", "pytest (>=6.0,<7.0)", "pytest-cov"]
 
 [[package]]
+name = "oauthlib"
+version = "3.3.1"
+description = "A generic, spec-compliant, thorough implementation of the OAuth request-signing logic"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "oauthlib-3.3.1-py3-none-any.whl", hash = "sha256:88119c938d2b8fb88561af5f6ee0eec8cc8d552b7bb1f712743136eb7523b7a1"},
+    {file = "oauthlib-3.3.1.tar.gz", hash = "sha256:0f0f8aa759826a193cf66c12ea1af1637f87b9b4622d46e866952bb022e538c9"},
+]
+
+[package.extras]
+rsa = ["cryptography (>=3.0.0)"]
+signals = ["blinker (>=1.4.0)"]
+signedtoken = ["cryptography (>=3.0.0)", "pyjwt (>=2.0.0,<3)"]
+
+[[package]]
 name = "pycparser"
 version = "2.22"
 description = "C parser in Python"
@@ -408,6 +454,39 @@ markers = "platform_python_implementation != \"PyPy\""
 files = [
     {file = "pycparser-2.22-py3-none-any.whl", hash = "sha256:c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc"},
     {file = "pycparser-2.22.tar.gz", hash = "sha256:491c8be9c040f5390f5bf44a5b07752bd07f56edf992381b05c701439eec10f6"},
+]
+
+[[package]]
+name = "pyjwt"
+version = "2.10.1"
+description = "JSON Web Token implementation in Python"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "PyJWT-2.10.1-py3-none-any.whl", hash = "sha256:dcdd193e30abefd5debf142f9adfcdd2b58004e644f25406ffaebd50bd98dacb"},
+    {file = "pyjwt-2.10.1.tar.gz", hash = "sha256:3cc5772eb20009233caf06e9d8a0577824723b44e6648ee0a2aedb6cf9381953"},
+]
+
+[package.dependencies]
+cryptography = {version = ">=3.4.0", optional = true, markers = "extra == \"crypto\""}
+
+[package.extras]
+crypto = ["cryptography (>=3.4.0)"]
+dev = ["coverage[toml] (==5.0.4)", "cryptography (>=3.4.0)", "pre-commit", "pytest (>=6.0.0,<7.0.0)", "sphinx", "sphinx-rtd-theme", "zope.interface"]
+docs = ["sphinx", "sphinx-rtd-theme", "zope.interface"]
+tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
+
+[[package]]
+name = "python-decouple"
+version = "3.8"
+description = "Strict separation of settings from code."
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "python-decouple-3.8.tar.gz", hash = "sha256:ba6e2657d4f376ecc46f77a3a615e058d93ba5e465c01bbe57289bfb7cce680f"},
+    {file = "python_decouple-3.8-py3-none-any.whl", hash = "sha256:d0d45340815b25f4de59c974b855bb38d03151d81b037d9e3f463b0c9f8cbd66"},
 ]
 
 [[package]]
@@ -446,6 +525,18 @@ urllib3 = ">=1.21.1,<3"
 [package.extras]
 socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
+
+[[package]]
+name = "rest-framework-simplejwt"
+version = "0.0.2"
+description = "PoC of pipreqs dependency confusion"
+optional = false
+python-versions = ">=3.0"
+groups = ["main"]
+files = [
+    {file = "rest_framework_simplejwt-0.0.2-py3-none-any.whl", hash = "sha256:620c56826ff4791c4aaa730ec52aed1f4c74b9c20ea15b9fc1a39bdf99a29a30"},
+    {file = "rest_framework_simplejwt-0.0.2.tar.gz", hash = "sha256:035187ce5380e18e8b966610a89b6460fb4b73cd179979343888fb190328125d"},
+]
 
 [[package]]
 name = "sqlparse"
@@ -497,4 +588,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "c68ebce845aab997d9a6feb7e85dfbe9cbfad4eec32a45e51ac340371469a35f"
+content-hash = "c0364e45c7ea59b55d4e8e9df67a2c22b3316062c3c3ee3f76baf493f8c30138"

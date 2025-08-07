@@ -34,7 +34,8 @@ const LoginComponent = () => {
 
   const handleGitHubLogin = async () => {
     const clientId = 'Ov23liMbdbPZIZnCbi9G';
-    navigate("/home")
+    const redirectUri = 'http://localhost:8000/api/accounts/github/login/';
+    window.location.href = redirectUri;
   }
   return (
     <div>
@@ -45,7 +46,6 @@ const LoginComponent = () => {
         }}
         onError={() => console.log("Błąd logowania Google")}
       />
-      <h2>Zaloguj się przez GitHub</h2>
       <button onClick={handleGitHubLogin}>
         Zaloguj się przez GitHub
       </button>
