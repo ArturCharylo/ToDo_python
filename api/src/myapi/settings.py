@@ -167,12 +167,6 @@ AUTHENTICATION_BACKENDS = [
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
-ACCOUNT_SIGNUP_FIELDS = {
-    "email": {"required": True},
-    "password1": {"required": True},
-}
-
-
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "SCOPE": [

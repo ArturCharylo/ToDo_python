@@ -227,6 +227,12 @@ function App() {
     <>
       <h1>Welcome to the To Do App</h1>
       <p>Manage your tasks efficiently!</p>
+      <div className="log-out-container">
+        <button className='log-out-btn' onClick={() => {
+          localStorage.removeItem('token');
+          window.location.href = '/'; // Redirect to login page
+        }}>Log out</button>
+      </div>
       <form onSubmit={handleSubmit} className='task-form'>
         <input
           type="text"
