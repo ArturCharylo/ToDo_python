@@ -24,6 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DJANGO_SECRET")
+GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT")
+GITHUB_CLIENT_SECRET = os.getenv("GITHUB_SECRET")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

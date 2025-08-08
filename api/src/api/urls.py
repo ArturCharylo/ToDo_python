@@ -5,7 +5,6 @@ from dj_rest_auth.registration.views import SocialLoginView
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .views import GitHubLoginView
 
 
 class GoogleLogin(SocialLoginView):
@@ -22,5 +21,5 @@ urlpatterns = [
     path('get_users', views.users_list, name="users_list"),
     path('accounts/', include('allauth.urls')),
     path("google/", GoogleLogin.as_view(), name="google_login"),
-    path('api/github/login/', GitHubLoginView.as_view(), name='github_login'),
+    path('github/login/', views.github_login, name='github_login'),
 ]

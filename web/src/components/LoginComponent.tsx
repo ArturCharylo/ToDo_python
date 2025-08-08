@@ -33,10 +33,11 @@ const LoginComponent = () => {
   };
 
   const handleGitHubLogin = async () => {
-    const clientId = 'Ov23liMbdbPZIZnCbi9G';
-    const redirectUri = 'http://localhost:8000/api/accounts/github/login/';
-    window.location.href = redirectUri;
-  }
+    const clientId = "OV23liMbdbPZIZnCbi9G";
+    const redirectUri = "http://localhost:5173/github-callback";
+    const scope = "read:user user:email";
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
+  };
   return (
     <div>
       <h2>Zaloguj się przez Google</h2>
