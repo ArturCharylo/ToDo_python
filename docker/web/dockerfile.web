@@ -5,12 +5,13 @@ FROM node:20-alpine
 WORKDIR /app
 
 # copy package files for cache
-COPY package*.json ./
-
+COPY package.json package-lock.json ./
+RUN rm -rf node_modules/.vite
 RUN npm install
 
 # Copy project files
 COPY . .
+
 
 # Open vite port
 EXPOSE 5173
