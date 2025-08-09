@@ -20,49 +20,47 @@ def github_login(request):
     if not code:
         return Response({"error": "Missing code"}, status=status.HTTP_400_BAD_REQUEST)
 
+    # Wymiana kodu na token - tylko raz
     token_res = requests.post(
         "https://github.com/login/oauth/access_token",
         headers={"Accept": "application/json"},
         data={
-            "client_id": settings.GITHUB_CLIENT_ID,
-            "client_secret": settings.GITHUB_CLIENT_SECRET,
+            "client_id": settings.GITHUB_CLIENT,
+            "client_secret": settings.GITHUB_SECRET,
             "code": code,
             "redirect_uri": "http://localhost:5173/github-callback"
         }
     )
+
     if token_res.status_code != 200:
         return Response({"error": "Failed to fetch token"}, status=status.HTTP_400_BAD_REQUEST)
 
-    access_token = token_res.json().get("access_token")
+    token_json = token_res.json()
+    access_token = token_json.get("access_token")
     if not access_token:
         return Response({"error": "No access token in response"}, status=status.HTTP_400_BAD_REQUEST)
 
-    user_res = requests.get(
-        "https://api.github.com/user",
-        headers={"Authorization": f"Bearer {access_token}"}
-    )
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Accept": "application/vnd.github+json"
+    }
+
+    user_res = requests.get("https://api.github.com/user", headers=headers)
     email_res = requests.get(
-        "https://api.github.com/user/emails",
-        headers={"Authorization": f"Bearer {access_token}"}
-    )
-    print("User info status:", user_res.status_code)
-    print("User info response:", user_res.text)
-    print("Email info status:", email_res.status_code)
-    print("Email info response:", email_res.text)
+        "https://api.github.com/user/emails", headers=headers)
+
     if user_res.status_code != 200 or email_res.status_code != 200:
-        print("GitHub token response:", token_res.status_code, token_res.text)
         return Response({"error": "Failed to fetch user info"}, status=status.HTTP_400_BAD_REQUEST)
 
     github_user = user_res.json()
     emails = email_res.json()
+
     primary_email = next((e["email"]
                          for e in emails if e.get("primary")), None)
-
     if not primary_email:
         return Response({"error": "No primary email found"}, status=status.HTTP_400_BAD_REQUEST)
 
     user = User.objects.filter(email=primary_email).first()
-
     if user:
         serializer = UserSerializer(user)
         return Response(serializer.data, status=200)

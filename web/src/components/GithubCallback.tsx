@@ -1,11 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function GithubCallback() {
   const navigate = useNavigate();
+  const hasFetched = useRef(false);
 
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     const fetchToken = async () => {
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code");
@@ -19,6 +23,9 @@ export default function GithubCallback() {
       try {
         const res = await axios.post("http://localhost:8000/api/github/login/", { code });
         localStorage.setItem("token", res.data.token);
+        console.log(window.location.href);
+        console.log("Code:", code);
+
         navigate("/home");
       } catch (err) {
         console.error("Błąd logowania przez GitHub:", err);

@@ -24,8 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DJANGO_SECRET")
-GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT")
-GITHUB_CLIENT_SECRET = "django-insecure-89v(%b77o0-e$)!a4&)j6-#+y4ncspo_c9h%vs-5i(bawhp8mo"
+GITHUB_CLIENT = os.getenv("GITHUB_CLIENT")
+GITHUB_SECRET = os.getenv("GITHUB_SECRET")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -70,6 +70,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ],
 }
 
 ROOT_URLCONF = 'myapi.urls'
@@ -181,7 +184,7 @@ SOCIALACCOUNT_PROVIDERS = {
     },
     "github": {
         "APP": {
-            "client_id": os.getenv("GITHUB_CLIENT_ID"),
+            "client_id": os.getenv("GITHUB_CLIENT"),
             "secret": os.getenv("GITHUB_SECRET"),
         }
     }
