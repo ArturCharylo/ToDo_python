@@ -1,7 +1,7 @@
 services:
   backend:
     env_file:
-    - ../api/src/.env
+    - ../api/src/.env.ci
     build:
       context: ../api
       dockerfile: ../docker/backend/dockerfile.backend
