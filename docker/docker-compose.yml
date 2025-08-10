@@ -1,5 +1,7 @@
 services:
   backend:
+    env_file:
+    - ../api/src/.env
     build:
       context: ../api
       dockerfile: ../docker/backend/dockerfile.backend
@@ -24,8 +26,10 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      - ../web:/app 
-      - /app/node_modules
+      - ../web/src:/app/src
+      - ../web/vite.config.ts:/app/vite.config.ts
+      - ../web/package.json:/app/package.json
+      - ../web/tsconfig.json:/app/tsconfig.json
     stdin_open: true
     tty: true
 

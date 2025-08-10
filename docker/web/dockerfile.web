@@ -1,20 +1,14 @@
-# dockerfile.web
-
 FROM node:20-alpine
 
 WORKDIR /app
 
-# copy package files for cache
-COPY package.json package-lock.json ./
-RUN rm -rf node_modules/.vite
+# zainstaluj narzędzia potrzebne do kompilacji
+RUN apk add --no-cache python3 make g++
+
+COPY package*.json ./
 RUN npm install
 
-# Copy project files
 COPY . .
 
-
-# Open vite port
 EXPOSE 5173
-
-# run app
 CMD ["npm", "run", "dev"]
