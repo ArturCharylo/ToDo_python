@@ -22,10 +22,15 @@ jobs:
         run: docker compose -f docker/docker-compose.yml build --progress=plain
 
       - name: Run Django tests
-        run: docker compose -f docker/docker-compose.yml run --rm --workdir /backend/src backend python manage.py test
-
-      - name: Run Web tests
-        run: docker compose -f docker/docker-compose.yml run --rm web npm run test
+        run: |
+          docker compose -f docker/docker-compose.yml run --rm \
+            --env-file /dev/null \
+            -e SECRET_KEY=django-insecure-89v(%b77o0-e$)!a4&)j6-#+y4ncspo_c9h%vs-5i(bawhp8mo \
+            -e DEBUG=True \
+            -e DATABASE_URL=sqlite:///db.sqlite3 \
+            --workdir /backend/src backend python manage.py test
+            - name: Run Web tests
+              run: docker compose -f docker/docker-compose.yml run --rm web npm run test
 
       - name: Run Console tests
         run: docker compose -f docker/docker-compose.yml run --rm console python test.py
