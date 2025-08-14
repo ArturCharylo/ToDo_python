@@ -1,9 +1,7 @@
 services:
   backend:
-    environment:
-      SECRET_KEY: django-insecure-89v(%b77o0-e$)!a4&)j6-#+y4ncspo_c9h%vs-5i(bawhp8mo
-    env_file:
-    - ../api/src/.env
+    env:
+      DJANGO_SECRET: ${{ secrets.DJANGO_SECRET }}
     build:
       context: ../api
       dockerfile: ../docker/backend/dockerfile.backend

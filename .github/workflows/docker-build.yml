@@ -22,15 +22,21 @@ jobs:
         run: docker compose -f docker/docker-compose.yml build --progress=plain
 
       - name: Run Django tests
+        env:
+          SECRET_KEY: ${{ secrets.DJANGO_SECRET }},
+          GITHUB_SECRET: ${{ secrets.GH_SECRET }},
+          GITHUB_CLIENT: ${{ secrets.GH_CLIENT }},
+          OAUTH_SECRET: ${{ secrets.OAUTH_SECRET }},
+          OUATH_CLIENT: ${{ secrets.OUATH_CLIENT_ID }},
         run: |
           docker compose -f docker/docker-compose.yml run --rm \
-            --env-file /dev/null \
-            -e SECRET_KEY=django-insecure-89v(%b77o0-e$)!a4&)j6-#+y4ncspo_c9h%vs-5i(bawhp8mo \
-            -e DEBUG=True \
-            -e DATABASE_URL=sqlite:///db.sqlite3 \
+            -e SECRET_KEY=$SECRET_KEY \
+            -e DEBUG=$DEBUG \
+            -e DATABASE_URL=$DATABASE_URL \
             --workdir /backend/src backend python manage.py test
-            - name: Run Web tests
-              run: docker compose -f docker/docker-compose.yml run --rm web npm run test
+
+      - name: Run Web tests
+        run: docker compose -f docker/docker-compose.yml run --rm web npm run test
 
       - name: Run Console tests
         run: docker compose -f docker/docker-compose.yml run --rm console python test.py

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import pathlib
 from dotenv import load_dotenv
 import os
 load_dotenv('./.env')
@@ -23,6 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+env_path = pathlib.Path(__file__).resolve().parent.parent / '.env'
+if env_path.exists():
+    load_dotenv(env_path)
 SECRET_KEY = os.getenv("DJANGO_SECRET")
 GITHUB_CLIENT = os.getenv("GITHUB_CLIENT")
 GITHUB_SECRET = os.getenv("GITHUB_SECRET")
