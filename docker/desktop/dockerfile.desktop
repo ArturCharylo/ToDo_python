@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
     xvfb \
     xauth \
     x11-utils \
-    libgl1-mesa-glx \
+    libgl1 \
     libegl1 \
     libxrender1 \
     libxext6 \
