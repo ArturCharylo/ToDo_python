@@ -31,8 +31,6 @@ jobs:
         run: |
           docker compose -f docker/docker-compose.yml run --rm \
             -e SECRET_KEY=$SECRET_KEY \
-            -e DEBUG=$DEBUG \
-            -e DATABASE_URL=$DATABASE_URL \
             --workdir /backend/src backend python manage.py test
 
       - name: Run Web tests
