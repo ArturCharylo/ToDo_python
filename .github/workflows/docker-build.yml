@@ -10,6 +10,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      DJANGO_SECRET: ${{ secrets.DJANGO_SECRET }}
 
     steps:
       - name: Checkout repo

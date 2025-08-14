@@ -3,6 +3,8 @@ services:
     build:
       context: ../api
       dockerfile: ../docker/backend/dockerfile.backend
+    environment:
+      - DJANGO_SECRET=${DJANGO_SECRET}
     ports:
       - "8000:8000"
     volumes:
