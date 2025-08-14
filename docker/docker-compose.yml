@@ -1,7 +1,5 @@
 services:
   backend:
-    env:
-      DJANGO_SECRET: ${{ secrets.DJANGO_SECRET }}$
     build:
       context: ../api
       dockerfile: ../docker/backend/dockerfile.backend

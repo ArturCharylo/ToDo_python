@@ -23,14 +23,11 @@ jobs:
 
       - name: Run Django tests
         env:
-          SECRET_KEY: ${{ secrets.DJANGO_SECRET }},
-          GITHUB_SECRET: ${{ secrets.GH_SECRET }},
-          GITHUB_CLIENT: ${{ secrets.GH_CLIENT }},
-          OAUTH_SECRET: ${{ secrets.OAUTH_SECRET }},
-          OUATH_CLIENT: ${{ secrets.OUATH_CLIENT_ID }},
+          DJANGO_SECRET: ${{ secrets.DJANGO_SECRET }}
+          GITHUB_CLIENT: ${{ secrets.GH_CLIENT }}
+          GITHUB_SECRET: ${{ secrets.GH_SECRET }}
         run: |
           docker compose -f docker/docker-compose.yml run --rm \
-            -e SECRET_KEY=$SECRET_KEY \
             --workdir /backend/src backend python manage.py test
 
       - name: Run Web tests
