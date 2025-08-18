@@ -32,7 +32,7 @@ const LoginComponent = () => {
     navigate("/home");
   };
 
-  const handleGitHubLogin = async () => {
+  const handleGitHubLogin = () => {
     const clientId = "OV23liMbdbPZIZnCbi9G";
     const redirectUri = "http://localhost:5173/github-callback";
     const scope = "read:user user:email";

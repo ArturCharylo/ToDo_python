@@ -61,19 +61,19 @@ def github_login(request):
         return Response({"error": "No primary email found"}, status=status.HTTP_400_BAD_REQUEST)
 
     user = User.objects.filter(email=primary_email).first()
-    if user:
-        serializer = UserSerializer(user)
-        return Response(serializer.data, status=200)
+    if not user:
+        user = User.objects.create(
+            email=primary_email,
+            username=github_user.get("login", primary_email)
+        )
 
-    user, created = User.objects.get_or_create(
-        email=primary_email,
-        defaults={"username": github_user.get("login", primary_email)}
-    )
-
+    # ZAWSZE wydajemy JWT
     refresh = RefreshToken.for_user(user)
     return Response({
-        "token": str(refresh.access_token)
-    })
+        "access": str(refresh.access_token),
+        "refresh": str(refresh),
+        "user": UserSerializer(user).data
+    }, status=200)
 
 
 @api_view(['GET'])

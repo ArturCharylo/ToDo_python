@@ -22,7 +22,11 @@ export default function GithubCallback() {
 
       try {
         const res = await axios.post("http://localhost:8000/api/github/login/", { code });
-        localStorage.setItem("token", res.data.token);
+
+        // Backend zwraca access i refresh → zapisujemy je
+        localStorage.setItem("access", res.data.access);
+        localStorage.setItem("refresh", res.data.refresh);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
 
         navigate("/home");
       } catch (err) {
