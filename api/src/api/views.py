@@ -14,13 +14,22 @@ import os
 load_dotenv('./.env')
 
 
+def get_unique_username(base_username):
+    username = base_username
+    counter = 1
+    while User.objects.filter(username=username).exists():
+        username = f"{base_username}_{counter}"
+        counter += 1
+    return username
+
+
 @api_view(['POST'])
 def github_login(request):
     code = request.data.get('code')
     if not code:
         return Response({"error": "Missing code"}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Wymiana kodu na token - tylko raz
+    # 1. Exchange code for access_token
     token_res = requests.post(
         "https://github.com/login/oauth/access_token",
         headers={"Accept": "application/json"},
@@ -45,6 +54,7 @@ def github_login(request):
         "Accept": "application/vnd.github+json"
     }
 
+    # 2. Get user data from Github
     user_res = requests.get("https://api.github.com/user", headers=headers)
     email_res = requests.get(
         "https://api.github.com/user/emails", headers=headers)
@@ -60,14 +70,25 @@ def github_login(request):
     if not primary_email:
         return Response({"error": "No primary email found"}, status=status.HTTP_400_BAD_REQUEST)
 
+    # 3. Check if user exists
     user = User.objects.filter(email=primary_email).first()
-    if not user:
-        user = User.objects.create(
-            email=primary_email,
-            username=github_user.get("login", primary_email)
-        )
+    if user:
+        # If exists refresh JWT
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+            "user": UserSerializer(user).data
+        }, status=200)
 
-    # ZAWSZE wydajemy JWT
+    # 4. Create new user with unique username
+    username = get_unique_username(github_user.get("login", primary_email))
+    user = User.objects.create(
+        email=primary_email,
+        username=username
+    )
+
+    # 5. Generate JWT
     refresh = RefreshToken.for_user(user)
     return Response({
         "access": str(refresh.access_token),
