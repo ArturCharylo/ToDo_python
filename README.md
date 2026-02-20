@@ -8,6 +8,10 @@ This project was built to practice structuring multi-layered Python applications
 
 > Note: All the versions have their own tests if you wish to run them you can!
 
+## 🆕 Recent Updates (2026)
+- **Automated Environment:** Introduced a robust `start.sh` bash script that drastically improves Developer Experience (DX). It runs the API and Web frontend concurrently, automatically handles dependency installations (`poetry` & `npm`), runs database migrations, and safely cleans up ports and background processes on exit.
+- **Modernization & Refactoring:** Ongoing process of splitting monolithic React structures into smaller, reusable components, and upgrading overall application security.
+
 ## 📚 Table of Contents
 
 - [🚀 How to Start](#-how-to-start)
@@ -34,71 +38,89 @@ This project was built to practice structuring multi-layered Python applications
 
 ## 🚀 How to Start
 
-## 🐳 Docker Support
+### ⚡ Quick Start: Web + API (Linux / macOS / WSL)
+The absolute easiest way to start the web application and backend API is by using the automated startup script. 
 
-You can now run the entire app using Docker!
-[See Build & Run with Docker Compose section below for details.](#-build--run-with-docker-compose)
+1. Give the script execution permissions (only needed once):
+   ```bash
+   chmod +x start.sh
+   ```
+Run the application:
 
-### Requirements
+```Bash
+./start.sh
+```
+This script will automatically check and install all required Python and Node.js packages, apply database migrations, and spin up both the Django API and the Vite React App. Press Ctrl+C in the terminal to gracefully stop all services and free the ports.
 
-> API uses [Django REST Framework](https://www.django-rest-framework.org/) for the API layer.
+## 🛠️ Manual Start (Any OS)
+API uses Django REST Framework for the API layer.
+Requirements: Poetry must be installed. Python 3.10+ recommended.
 
-- [Poetry](https://python-poetry.org/docs/) must be installed
-- Python 3.10+ recommended
+If you prefer to start services manually, or if you want to run the Desktop or Console versions:
 
-### Running the app
+Start the API: Go to the api/src directory and run:
 
-Before running the app, install the required packages:
-
-```bash
+```Bash
 poetry install
+poetry run python manage.py runserver
+```
+Start a Client (Choose one):
+
+Web version: Go to the web/ directory and run:
+
+```Bash
+npm i
+npm run dev
+```
+Desktop version: Go to the desktop directory and run:
+
+```Bash
+poetry install
+poetry run python main.py
+```
+Console version: Go to the console/ directory and run:
+
+```Bash
+poetry install
+poetry run python ToDo.py
 ```
 
-1. Go to the `api/src` directory and run:
+## 🐳 Docker Support
+You can also run the entire app using Docker!
 
-   ```bash
-   poetry run python manage.py runserver
-   ```
+Build & Run with Docker Compose
+Make sure you have Docker and Docker Compose installed.
 
-   > Desktop version
+```Bash
+cd docker
+docker-compose up --build
+```
+This will spin up the following services:
 
-2. Once the server is running, go to the `desktop` directory and run:
-   ```bash
-   poetry run python main.py
-   ```
-   > Console version
-3. Once the server is running, go to the `console/` directory and run:
-   ```bash
-   poetry run python ToDo.py
-   ```
-   > Web version
-4. Once the server is running, go to the `web/` directory and run:
-   ```bash
-   npm i
-   npm run dev
-   ```
+- 🐍 backend (Django API)
 
-> ⚠️ Make sure all required packages are installed beforehand.
+- 🌐 web (Vite + React)
 
+- 🖥️ desktop (PySide6 GUI)
+
+- 💻 console (CLI version)
+
+Note: Desktop and Console services run in containers and are mainly useful for debugging and CI — local use is still easier outside Docker.
+
+To stop the containers, use Docker Desktop or run:
+
+```Bash
+docker-compose down
+```
 ## 🗃️ API Setup
+If you are not using start.sh or Docker, and running the project for the very first time manually, you need to set up the database:
 
-When running the project for the first time, you need to set up the database:
-
-```bash
+```Bash
+cd api/src
 poetry run python manage.py makemigrations
 poetry run python manage.py migrate
 ```
-
-This will generate the database and create the required tables.
-
-All the backend endpoints are located in `api/src/api/views.py`. The app provides the following API routes:
-
-- `GET` – Returns all tasks from the database
-- `POST` – Adds a new task
-- `PATCH` – Updates the completion status of a task
-- `DELETE` – Deletes a task
-
----
+This will generate the database and create the required tables. All backend endpoints are located in api/src/api/views.py. The app provides standard CRUD operations via REST.
 
 ## 🧪 Tests
 
