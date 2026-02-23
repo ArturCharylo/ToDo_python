@@ -10,7 +10,7 @@ task_filter = "wszystkie"  # Default filter for displaying tasks
 
 def load_tasks():
     # Function to load tasks from the file
-    response = requests.get(API_URL)
+    response = requests.get(f"{API_URL}tasks/")
     if response.status_code == 200:
         return response.json()
     else:
@@ -91,7 +91,7 @@ def add_task(task_title, task_description, task_deadline):
         "description": task_description,
         "deadline": task_deadline
     }
-    response = requests.post(f"{API_URL}add/", json=new_task)
+    response = requests.post(f"{API_URL}tasks/", json=new_task)
     if response.status_code == 201:
         print(f"Zadanie '{task_title}' zostało dodane.")
     else:
@@ -130,7 +130,7 @@ def display_tasks():
 def mark_task_as_done(task_number):
     # Function to change the status of a task to done
     response = requests.patch(
-        f"{API_URL}update/{task_number}/", json={"completed": "Done"})
+        f"{API_URL}tasks/{task_number}/", json={"completed": "Done"})
     if response.status_code in [200, 202]:
         print(
             f"Zadanie o numerze {task_number} zostało oznaczone jako wykonane.")
@@ -141,7 +141,7 @@ def mark_task_as_done(task_number):
 
 def delete_task(task_number):
     # Function to delete a task by its number from the API
-    response = requests.delete(f"{API_URL}delete/{task_number}/")
+    response = requests.delete(f"{API_URL}tasks/{task_number}/")
     if response.status_code == 204:
         print(f"Zadanie o numerze {task_number} zostało usunięte.")
     else:
