@@ -2,8 +2,10 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import Login from '../components/LoginComponent';
 
 const App = () => {
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
   return (
-    <GoogleOAuthProvider clientId="453582868828-5coj2343a3k59i3rqc6frqk2a93oh86g.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={clientId}>
       <Login />
     </GoogleOAuthProvider>
   );
