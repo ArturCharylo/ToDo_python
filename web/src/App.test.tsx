@@ -7,6 +7,22 @@ import { vi } from 'vitest';
 vi.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
+// Mock window.alert and window.location to prevent JSDom errors during testing
+beforeAll(() => {
+  window.alert = vi.fn();
+  Object.defineProperty(window, 'location', {
+    value: { href: '/' },
+    writable: true,
+  });
+});
+
+// Set a fake token before each test so the app doesn't try to log out the test environment
+beforeEach(() => {
+  localStorage.setItem('token', 'fake-test-token');
+  localStorage.setItem('taskFilter', 'All');
+  vi.clearAllMocks();
+});
+
 test('renders header and form inputs', async () => {
   render(<App />);
   expect(screen.getByText(/Welcome to the To Do App/i)).toBeInTheDocument();
@@ -82,8 +98,6 @@ test('can filter tasks by status', async () => {
 
 describe('App', () => {
   it('updates task status when clicking "Update Status"', async () => {
-    localStorage.setItem('taskFilter', 'All');
-
     mockedAxios.get.mockResolvedValueOnce({
       data: [
         {
@@ -115,8 +129,6 @@ describe('App', () => {
   });
 
   it('deletes a task when clicking "Delete Task"', async () => {
-    localStorage.setItem('taskFilter', 'All');
-
     mockedAxios.get.mockResolvedValueOnce({
       data: [
         {
@@ -141,8 +153,7 @@ describe('App', () => {
 
     await waitFor(() => {
       expect(mockedAxios.delete).toHaveBeenCalledWith(
-        'http://localhost:8000/api/delete/1/',
-        {}
+        'http://localhost:8000/api/delete/1/'
       );
     });
   });
