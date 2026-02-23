@@ -20,7 +20,7 @@ export const useTasks = () => {
   // This function retrieves the tasks from the backend and updates the state
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/");
+      const response = await axios.get("http://localhost:8000/api/tasks/");
       setTasks(response?.data ?? []);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -40,7 +40,7 @@ export const useTasks = () => {
   // Handles adding a task via an API request
   const addTask = async (task: NewTask) => {
     try {
-      await axios.post("http://localhost:8000/api/add/", task);
+      await axios.post("http://localhost:8000/api/tasks/", task);
       await fetchTasks();
     } catch (error) {
       console.error("Error adding task:", error);
@@ -51,7 +51,7 @@ export const useTasks = () => {
   const updateTaskStatus = async (task: Task) => {
     try {
       const newStatus = task.completed === "Done" ? "Undone" : "Done";
-      await axios.patch(`http://localhost:8000/api/update/${task.task_number}/`, {
+      await axios.patch(`http://localhost:8000/api/tasks/${task.task_number}/`, {
         completed: newStatus
       });
       // Update local state to avoid an extra API call
@@ -68,7 +68,7 @@ export const useTasks = () => {
   // Handles deleting tasks from the database via an API request
   const deleteTask = async (task: Task) => {
     try {
-      await axios.delete(`http://localhost:8000/api/delete/${task.task_number}/`);
+      await axios.delete(`http://localhost:8000/api/tasks/${task.task_number}/`);
       setTasks(tasks.filter(t => t.task_number !== task.task_number));
     } catch (error) {
       console.error("Error deleting task:", error);
@@ -78,7 +78,7 @@ export const useTasks = () => {
   // Handles saving edited task data
   const editTask = async (taskNumber: number, updatedData: Partial<Task>) => {
     try {
-      await axios.patch(`http://localhost:8000/api/update/${taskNumber}/`, updatedData);
+      await axios.patch(`http://localhost:8000/api/tasks/${taskNumber}/`, updatedData);
       await fetchTasks();
     } catch (error) {
       console.error("Error saving edited task:", error);
