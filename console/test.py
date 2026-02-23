@@ -6,7 +6,7 @@ import ToDo
 class TestTaskManager(unittest.TestCase):
     @patch('ToDo.requests.get')
     def test_load_tasks_success(self, mock_get):
-        # preapare
+        # prepare
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.json.return_value = [{'task_number': 1, 'title': 'Test'}]
@@ -17,7 +17,8 @@ class TestTaskManager(unittest.TestCase):
 
         # assert
         self.assertEqual(tasks, [{'task_number': 1, 'title': 'Test'}])
-        mock_get.assert_called_once_with(ToDo.API_URL)
+        # Aktualizacja do nowego adresu REST API
+        mock_get.assert_called_once_with(f"{ToDo.API_URL}tasks/")
 
     @patch('ToDo.requests.get')
     def test_load_tasks_failure(self, mock_get):
@@ -67,7 +68,7 @@ class TestTaskManager(unittest.TestCase):
 
         with patch('builtins.print') as mock_print:
             ToDo.mark_task_as_done(1)
-            mock_patch.assert_called_once()
+            mock_patch.assert_called_once_with(f"{ToDo.API_URL}tasks/1/", json={"completed": "Done"})
             mock_print.assert_any_call(
                 "Zadanie o numerze 1 zostało oznaczone jako wykonane.")
 
@@ -79,7 +80,7 @@ class TestTaskManager(unittest.TestCase):
 
         with patch('builtins.print') as mock_print:
             ToDo.delete_task(1)
-            mock_delete.assert_called_once()
+            mock_delete.assert_called_once_with(f"{ToDo.API_URL}tasks/1/")
             mock_print.assert_any_call("Zadanie o numerze 1 zostało usunięte.")
 
     @patch('builtins.input', side_effect=['2'])
