@@ -122,7 +122,7 @@ describe('App', () => {
 
     await waitFor(() => {
       expect(mockedAxios.patch).toHaveBeenCalledWith(
-        'http://localhost:8000/api/update/1/',
+        'http://localhost:8000/api/tasks/1/',
         { completed: 'Done' }
       );
     });
@@ -153,7 +153,7 @@ describe('App', () => {
 
     await waitFor(() => {
       expect(mockedAxios.delete).toHaveBeenCalledWith(
-        'http://localhost:8000/api/delete/1/'
+        'http://localhost:8000/api/tasks/1/'
       );
     });
   });
