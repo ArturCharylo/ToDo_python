@@ -1,4 +1,6 @@
-# ui/main_window.py
+"""
+ui/main_window.py
+"""
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout,
     QLineEdit, QPushButton, QListWidget, QMenuBar, QMenu, QMessageBox, QComboBox
@@ -16,11 +18,15 @@ import asyncio
 
 class MainWindow(QMainWindow):
     def __init__(self):
+        """
+        Initialize the main window, setting up UI components, menu, layouts, and event loop.
+        """
         super().__init__()
         self.setWindowTitle("ToDo App - Desktop")
-        self.task_filter = "wszystkie"  # default filter
 
-        # ---------------- MENU ----------------
+        self.task_filter = "wszystkie"
+        """Default task filter."""
+
         menu_bar = QMenuBar(self)
         file_menu = QMenu("Plik", self)
         exit_action = QAction("Zamknij", self)
@@ -29,18 +35,15 @@ class MainWindow(QMainWindow):
         menu_bar.addMenu(file_menu)
         self.setMenuBar(menu_bar)
 
-        # ---------------- MAIN LAYOUT ----------------
         main_widget = QWidget()
         main_layout = QVBoxLayout()
 
-        # Header
         title_label = QLabel("ToDo App")
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title_label.setStyleSheet(
             "font-size: 24px; font-weight: bold; padding: 10px; background-color: #f0f0f0; border-bottom: 1px solid #ccc;"
         )
 
-        # ---------------- ADD TASK ----------------
         add_task_layout = QHBoxLayout()
         self.task_title = QLineEdit()
         self.task_description = QLineEdit()
@@ -56,7 +59,6 @@ class MainWindow(QMainWindow):
         add_task_layout.addWidget(self.task_deadline)
         add_task_layout.addWidget(add_button)
 
-        # ---------------- FILTER ----------------
         filter_layout = QHBoxLayout()
         self.filter_box = QComboBox()
         self.filter_box.addItems(["wszystkie", "wykonane", "niewykonane"])
@@ -64,22 +66,18 @@ class MainWindow(QMainWindow):
         filter_layout.addWidget(QLabel("Filtr:"))
         filter_layout.addWidget(self.filter_box)
 
-        # ---------------- TASK LIST ----------------
         self.task_list = QListWidget()
         self.task_list.itemDoubleClicked.connect(self.toggle_task_done)
 
-        # ---------------- DELETE BUTTON ----------------
         delete_button = QPushButton("Usuń zaznaczone zadanie")
         delete_button.clicked.connect(self.delete_selected_task)
 
-        # ---------------- FOOTER ----------------
         footer_label = QLabel("ToDo App - PySide6 Example")
         footer_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         footer_label.setStyleSheet(
             "font-size: 12px; background-color: #f0f0f0; border-top: 1px solid #ccc;"
         )
 
-        # ---------------- FINAL LAYOUT ----------------
         main_layout.addWidget(title_label)
         main_layout.addLayout(add_task_layout)
         main_layout.addLayout(filter_layout)
@@ -90,14 +88,15 @@ class MainWindow(QMainWindow):
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
 
-        # Run the event loop
         self.loop = asyncio.get_event_loop()
         QTimer.singleShot(0, self.process_events)
 
-        # load tasks on startup
         asyncio.ensure_future(self.load_tasks())
 
     def process_events(self):
+        """
+        Process asyncio events to keep the loop running smoothly inside Qt.
+        """
         try:
             self.loop.stop()
             self.loop.run_forever()
@@ -106,6 +105,9 @@ class MainWindow(QMainWindow):
         QTimer.singleShot(50, self.process_events)
 
     async def load_tasks(self):
+        """
+        Load tasks from the API and display them according to the selected filter.
+        """
         try:
             tasks = await load_tasks_from_api(self.task_filter)
             self.task_list.clear()
@@ -116,6 +118,9 @@ class MainWindow(QMainWindow):
                 self, "Błąd", f"Nie udało się pobrać zadań:\n{e}")
 
     def add_task_to_listwidget(self, task, status, pretty_date):
+        """
+        Add a task item text to the task list widget.
+        """
         item_text = (
             f"{status} [{task['task_number']}] {task['title']} (do: {task['deadline']})\n"
             f"Opis: {task.get('description', '')} | dodano: {pretty_date}"
@@ -123,6 +128,9 @@ class MainWindow(QMainWindow):
         self.task_list.addItem(item_text)
 
     def add_task(self):
+        """
+        Handle adding a new task from the UI inputs.
+        """
         title = self.task_title.text().strip()
         description = self.task_description.text().strip()
         deadline = self.task_deadline.text().strip()
@@ -131,6 +139,9 @@ class MainWindow(QMainWindow):
                 title, description, deadline))
 
     async def _add_task_async(self, title, description, deadline):
+        """
+        Asynchronously add a task to the API and handle the response.
+        """
         try:
             response = await add_task_to_api(title, description, deadline)
             if response.status == 201:
@@ -148,6 +159,9 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "Błąd", f"Wystąpił problem:\n{e}")
 
     def toggle_task_done(self, item):
+        """
+        Handle marking a task as done based on the selected item.
+        """
         text = item.text()
         try:
             task_number = int(text.split('[')[1].split(']')[0])
@@ -156,6 +170,9 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "Błąd", f"Błąd:\n{e}")
 
     async def _toggle_task_done_async(self, task_number):
+        """
+        Asynchronously toggle the completion status of a task via the API.
+        """
         try:
             response = await toggle_task_done_in_api(task_number)
             if response.status in [200, 202]:
@@ -170,6 +187,9 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "Błąd", f"Błąd:\n{e}")
 
     def delete_selected_task(self):
+        """
+        Delete the task currently selected in the UI list.
+        """
         selected_items = self.task_list.selectedItems()
         if not selected_items:
             QMessageBox.information(
@@ -183,6 +203,9 @@ class MainWindow(QMainWindow):
                 QMessageBox.warning(self, "Błąd", f"Błąd:\n{e}")
 
     async def _delete_task_async(self, task_number):
+        """
+        Asynchronously delete a task using the API.
+        """
         try:
             response = await delete_task_in_api(task_number)
             if response.status == 204:
@@ -197,5 +220,8 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "Błąd", f"Błąd:\n{e}")
 
     def change_filter(self, new_filter):
+        """
+        Update the task filter and reload tasks from the API.
+        """
         self.task_filter = new_filter
         asyncio.ensure_future(self.load_tasks())

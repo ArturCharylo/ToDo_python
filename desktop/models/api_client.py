@@ -1,4 +1,6 @@
-# desktop/models/task_service.py
+"""
+desktop/models/task_service.py
+"""
 
 import aiohttp
 import datetime
