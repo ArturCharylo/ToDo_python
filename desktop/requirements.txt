@@ -3,4 +3,4 @@ aiohttp
 pytest
 pytest-qt
 pytest-asyncio
-
+numpy
