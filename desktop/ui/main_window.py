@@ -6,6 +6,7 @@ from PySide6.QtWidgets import (
     QLineEdit, QPushButton, QListWidget, QMenuBar, QMenu, QMessageBox, QComboBox
 )
 from PySide6.QtGui import QAction
+import os
 from PySide6.QtCore import Qt, QTimer
 from models.api_client import (
     load_tasks_from_api,
@@ -39,10 +40,8 @@ class MainWindow(QMainWindow):
         main_layout = QVBoxLayout()
 
         title_label = QLabel("ToDo App")
+        title_label.setObjectName("titleLabel")
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title_label.setStyleSheet(
-            "font-size: 24px; font-weight: bold; padding: 10px; background-color: #f0f0f0; border-bottom: 1px solid #ccc;"
-        )
 
         add_task_layout = QHBoxLayout()
         self.task_title = QLineEdit()
@@ -73,10 +72,8 @@ class MainWindow(QMainWindow):
         delete_button.clicked.connect(self.delete_selected_task)
 
         footer_label = QLabel("ToDo App - PySide6 Example")
+        footer_label.setObjectName("footerLabel")
         footer_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        footer_label.setStyleSheet(
-            "font-size: 12px; background-color: #f0f0f0; border-top: 1px solid #ccc;"
-        )
 
         main_layout.addWidget(title_label)
         main_layout.addLayout(add_task_layout)
@@ -88,10 +85,23 @@ class MainWindow(QMainWindow):
         main_widget.setLayout(main_layout)
         self.setCentralWidget(main_widget)
 
+        self.load_stylesheet()
+
         self.loop = asyncio.get_event_loop()
         QTimer.singleShot(0, self.process_events)
 
         asyncio.ensure_future(self.load_tasks())
+
+    def load_stylesheet(self):
+        """
+        Load QSS styles from external file and apply to application.
+        """
+        styles_path = os.path.join(os.path.dirname(__file__), "styles.qss")
+        try:
+            with open(styles_path, "r", encoding="utf-8") as f:
+                self.setStyleSheet(f.read())
+        except Exception as e:
+            print(f"Failed to load QSS styles from {styles_path}: {e}")
 
     def process_events(self):
         """
