@@ -3,10 +3,11 @@ ui/main_window.py
 """
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout,
-    QLineEdit, QPushButton, QListWidget, QMenuBar, QMenu, QMessageBox, QComboBox
+    QLineEdit, QPushButton, QListWidget, QMenuBar, QMenu, QMessageBox, QComboBox, QFileDialog
 )
 from PySide6.QtGui import QAction
 import os
+import numpy as np
 from PySide6.QtCore import Qt, QTimer
 from models.api_client import (
     load_tasks_from_api,
@@ -30,9 +31,15 @@ class MainWindow(QMainWindow):
 
         menu_bar = QMenuBar(self)
         file_menu = QMenu("Plik", self)
+
+        export_action = QAction("Eksportuj zadania", self)
+        export_action.triggered.connect(self.export_tasks_to_file)
+        file_menu.addAction(export_action)
+
         exit_action = QAction("Zamknij", self)
         exit_action.triggered.connect(self.close)
         file_menu.addAction(exit_action)
+
         menu_bar.addMenu(file_menu)
         self.setMenuBar(menu_bar)
 
@@ -75,11 +82,16 @@ class MainWindow(QMainWindow):
         footer_label.setObjectName("footerLabel")
         footer_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
+        self.stats_label = QLabel("Ukończone zadania: 0%")
+        self.stats_label.setObjectName("statsLabel")
+        self.stats_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
         main_layout.addWidget(title_label)
         main_layout.addLayout(add_task_layout)
         main_layout.addLayout(filter_layout)
         main_layout.addWidget(self.task_list)
         main_layout.addWidget(delete_button)
+        main_layout.addWidget(self.stats_label)
         main_layout.addWidget(footer_label)
 
         main_widget.setLayout(main_layout)
@@ -121,8 +133,19 @@ class MainWindow(QMainWindow):
         try:
             tasks = await load_tasks_from_api(self.task_filter)
             self.task_list.clear()
+
+            statuses = []
             for task, status, pretty_date in tasks:
                 self.add_task_to_listwidget(task, status, pretty_date)
+                statuses.append(1 if status == "✅" else 0)
+
+            if statuses:
+                completed_ratio = np.mean(statuses)
+                percentage = completed_ratio * 100
+                self.stats_label.setText(f"Ukończone zadania: {percentage:.1f}%")
+            else:
+                self.stats_label.setText("Ukończone zadania: 0%")
+
         except Exception as e:
             QMessageBox.warning(
                 self, "Błąd", f"Nie udało się pobrać zadań:\n{e}")
@@ -235,3 +258,31 @@ class MainWindow(QMainWindow):
         """
         self.task_filter = new_filter
         asyncio.ensure_future(self.load_tasks())
+
+    def export_tasks_to_file(self):
+        """
+        Export the current task list to a text or CSV file.
+        """
+        if self.task_list.count() == 0:
+            QMessageBox.information(
+                self, "Informacja", "Nie ma zadań do wyeksportowania.")
+            return
+
+        file_path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Zapisz zadania",
+            "",
+            "Text Files (*.txt);;CSV Files (*.csv);;All Files (*)"
+        )
+
+        if file_path:
+            try:
+                with open(file_path, "w", encoding="utf-8") as f:
+                    for i in range(self.task_list.count()):
+                        item_text = self.task_list.item(i).text()
+                        f.write(item_text + "\n" + "-"*40 + "\n")
+                QMessageBox.information(
+                    self, "Sukces", f"Zadania zostały wyeksportowane do: {file_path}")
+            except Exception as e:
+                QMessageBox.warning(
+                    self, "Błąd", f"Nie udało się zapisać pliku:\n{e}")
