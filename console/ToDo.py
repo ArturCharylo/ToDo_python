@@ -1,15 +1,16 @@
 import datetime
+import os
 import requests
-# This is the line that will be executed when the script starts and will be displayed only once
+
 print("Witaj w menedżerze zadań!")
 # is_running is a flag to control the main loop
 is_running = True
-API_URL = "http://backend:8000/api/"
+API_URL = os.getenv("API_URL", "http://127.0.0.1:8000/api/")
 task_filter = "wszystkie"  # Default filter for displaying tasks
 
 
 def load_tasks():
-    # Function to load tasks from the file
+    """ Function to load tasks from the file"""
     response = requests.get(f"{API_URL}tasks/")
     if response.status_code == 200:
         return response.json()
@@ -20,7 +21,7 @@ def load_tasks():
 
 
 def display_menu():
-    # Function to display the menu
+    """Function to display the menu and handle user input for task management"""
     global is_running
     global task_filter
     print("Wybierz opcję:")
@@ -85,7 +86,7 @@ def display_menu():
 
 
 def add_task(task_title, task_description, task_deadline):
-    # Function to add a new task to the file
+    """Function to add a new task to the file"""
     new_task = {
         "title": task_title,
         "description": task_description,
@@ -100,7 +101,7 @@ def add_task(task_title, task_description, task_deadline):
 
 
 def display_tasks():
-    # Function to display all the tasks that have been added
+    """Function to display all the tasks that have been added"""
     tasks = load_tasks()
     if not tasks:
         print("Brak zadań.")
@@ -128,7 +129,7 @@ def display_tasks():
 
 
 def mark_task_as_done(task_number):
-    # Function to change the status of a task to done
+    """Function to change the status of a task to done"""
     response = requests.patch(
         f"{API_URL}tasks/{task_number}/", json={"completed": "Done"})
     if response.status_code in [200, 202]:
@@ -140,7 +141,7 @@ def mark_task_as_done(task_number):
 
 
 def delete_task(task_number):
-    # Function to delete a task by its number from the API
+    """Function to delete a task by its number from the API"""
     response = requests.delete(f"{API_URL}tasks/{task_number}/")
     if response.status_code == 204:
         print(f"Zadanie o numerze {task_number} zostało usunięte.")
