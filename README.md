@@ -21,13 +21,11 @@ This project was built to practice structuring multi-layered Python applications
 - [🧠 About App Files](#-about-app-files)
 - [📦 Structure](#-structure)
 - [✅ Example Features](#-example-features)
+- [📋 Requirements Compliance](#-requirements-compliance)
 - [💡 Future Improvements](#-future-improvements)
 - [🧪 Build & Run with Docker Compose](#-build--run-with-docker-compose)
 - [🔄 GitHub Actions CI/CD](#-github-actions-cicd)
 - [📜 License](#-license)
-- [✅ Example Features](#-example-features)
-- [📋 Requirements Compliance](#-requirements-compliance)
-- [💡 Future Improvements](#-future-improvements)
 
 ---
 
