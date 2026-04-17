@@ -25,6 +25,9 @@ This project was built to practice structuring multi-layered Python applications
 - [🧪 Build & Run with Docker Compose](#-build--run-with-docker-compose)
 - [🔄 GitHub Actions CI/CD](#-github-actions-cicd)
 - [📜 License](#-license)
+- [✅ Example Features](#-example-features)
+- [📋 Requirements Compliance](#-requirements-compliance)
+- [💡 Future Improvements](#-future-improvements)
 
 ---
 
@@ -163,10 +166,12 @@ The `App.tsx` file contains the web frontend and all the logic that handles API 
 
 The `main_window.py` file contains the main layout and logic of the app. It includes:
 
-- All the visual elements of the app that you are able to see and interact with once the app starts
-- `display_menu()` – Displays the menu and handles user input
-- `load_data()` – Utility function for fetching data from the backend.
-- `add_task()`, `display_tasks()`, `mark_task_as_done()`, `delete_task()` – Main task-handling functions that interact with the backend
+- All visual elements of the app based on PySide6.
+- `load_tasks()` – Fetches tasks from the API, updates the list, and calculates completion statistics using `numpy`.
+- `add_task()` – Handles UI logic and validation for adding a new task from the user input fields.
+- `toggle_task_done(item)` – Asynchronously toggles the completion status of a task when double-clicked.
+- `delete_selected_task()` – Deletes the currently selected task from the database via the API.
+- `export_tasks_to_file()` – Implements file operations by exporting the current task list to a `.txt` or `.csv` file.
 
 ---
 
@@ -258,12 +263,24 @@ The `ToDo.py` file contains the CLI logic and handles communication with the bac
 
 ## ✅ Example Features
 
-- Task title, description, deadline
-- Marking tasks as completed
-- Deleting tasks
-- Filtering tasks by status
-- All data stored in a database via Django backend
-- CLI
+- Task title, description, and deadline management.
+- Marking tasks as completed and deleting tasks.
+- Filtering tasks by status (all, done, undone).
+- **Scientific Calculations:** Uses `numpy` to calculate real-time task completion statistics (percentage) in the Desktop UI.
+- **File Operations:** Exporting tasks to `.txt` and `.csv` files.
+- All data stored in a central database via Django REST backend.
+
+---
+
+## 📋 Requirements Compliance
+
+This project satisfies the following academic requirements:
+- [x] **Modularity:** Separate modules for API, Console, and Desktop applications.
+- [x] **Docstrings:** All major functions and methods include descriptive docstrings.
+- [x] **OOP:** Utilizes object-oriented principles in GUI development and Django models.
+- [x] **Scientific Library:** Integrated `numpy` for data analysis (completion stats).
+- [x] **File Operations:** Supports exporting data to external files and loading custom QSS styles.
+- [x] **GUI:** Feature-rich desktop interface built with PySide6.
 
 ---
 
